@@ -2,11 +2,17 @@ from datetime import datetime
 from flask import Flask, render_template, redirect, request, \
     flash, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_required, \
+    login_user, logout_user, current_user
 from sqlalchemy.sql import func
 import os
+import smtplib
 
 APP_SECRET_KEY = os.environ.get('APP_SECRET_KEY', 'change this')
 DATAFILE = "testate.db"
+SMTP_AUTHSERVER = os.environ.get('SMTP_AUTHSERVER', "smtp.example.com")
+ADMIN_ACCOUNTS = os.environ.get('ADMIN_ACCOUNTS', 'user1@example.org,user2@example.org')
+DEVELOPER_ACCOUNTS = os.environ.get('DEVELOPER_ACCOUNTS', 'user1@example.org,user2@example.org')
 
 app = Flask(__name__)
 # can be generated with: python -c 'import secrets; print(secrets.token_hex())'
@@ -17,6 +23,33 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.environ["PWD"]}/{DATAFIL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #app.logger.debug(f'flask config {app.config}')
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(userId):
+    u = User(userId)
+    return u
+
+class User(UserMixin):
+    def __init__(self, uid):
+        self.dbu = DBUser.query.get(uid)
+        if self.dbu is None:
+            self.dbu = DBUser(uid=uid, kuerzel=self.kuerzel)
+            db.session.add(self.dbu)
+            db.session.commit()
+
+    def get_id(self):
+        return self.dbu.uid
+
+    def is_teacher(self):
+        return False # self.dbu.is_teacher
+
+class DBUser(db.Model):
+    uid = db.Column(db.String(80), primary_key=True)
+    is_teacher = db.Column(db.Boolean, default=False)
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -39,8 +72,54 @@ class Milestone(db.Model):
     card = db.relationship(Card,
         backref=db.backref('milestones', lazy=True))
 
+def _auth(username, password):
+    app.logger.debug(f'auth {username}')
+    s = smtplib.SMTP(SMTP_AUTHSERVER)
+    s.starttls()
+
+    if '@tbs1.de' not in username:
+        return False
+
+    if DBUser.query.get(username) is None:
+        return False
+
+    try:
+        s.login(username, password)
+        login_user(User(username))
+        return True
+
+    except smtplib.SMTPAuthenticationError:
+        return False
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template('login.html')
+    elif request.method == "POST":
+        app.logger.debug("trying to login")
+        if _auth(request.form['username'], request.form['password']):
+            flash('Login erfolgreich')
+            app.logger.debug(f'login successful {current_user}')
+            #next = request.args.get('next')
+            # ignore next - always redirect to main page
+            #return redirect(next or url_for('index'))
+            return redirect(url_for('index'))
+
+        else:
+            app.logger.debug(f'login failed')
+            flash('Login fehlgeschlagen')
+            return redirect(url_for('login'))
+
+@app.route('/logout')
+@login_required
+def logout():
+    app.logger.debug(f'logout {current_user}')
+    flash(f'ausgeloggt')
+    logout_user()
+    return redirect('/')
 
 @app.route('/')
+@login_required
 def index():
     cards = Card.query.all()
     projects = [p.project_name for p in Card.query.group_by(Card.project_name)]
@@ -48,16 +127,19 @@ def index():
         cards=cards)
 
 @app.route('/cards/show/<project_name>')
+@login_required
 def cards_show(project_name):
     cards = Card.query.filter_by(project_name=project_name)
     return render_template('cards_show.html', cards=cards, project_name=project_name)
 
 @app.route('/card/<int:cid>/show')
+@login_required
 def card_show(cid):
     c = Card.query.get(cid)
     return render_template('card_edit.html', card=c)
 
 @app.route('/card/create', methods=["GET", "POST"])
+@login_required
 def card_create():
     if request.method == "GET":
         return render_template('card_create.html')
@@ -79,6 +161,7 @@ def card_create():
         return redirect(url_for('index'))
 
 @app.route('/milestone/<int:mid>/sign')
+@login_required
 def card_sign(mid):
     m = Milestone.query.get(mid)
     # TODO currentuser
@@ -92,6 +175,7 @@ def card_sign(mid):
     return redirect(url_for('cards_show', project_name=m.card.project_name))
 
 @app.route('/init_db')
+@login_required
 def init_db():
     app.logger.debug('Create db tables')
     db.create_all()
@@ -108,3 +192,4 @@ def init_db():
     flash('db initialisiert')
     return redirect(url_for('index'))
 
+#db.create_all()
