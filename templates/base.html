@@ -24,7 +24,8 @@
     {% endwith %}
 
     {% block menubar %}
-    <a href="{{url_for('index')}}">🏠 Start </a>
+    <a href="{{url_for('index')}}">🏠 Start </a> |
+    <a href="{{url_for('init_db')}}">init db</a>
     {% endblock %}
 
     <h1>{% block heading %} {% endblock %}</h1>

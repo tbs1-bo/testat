@@ -17,7 +17,7 @@ Testatkarten
 
 <ul>
     {% for card in cards %}
-    <li> <a href="{{url_for('card_show', cid=card.id)}}"> {{card.name}} </a></li>
+    <li> <a href="{{url_for('card_show', cid=card.id)}}"> {{card.project_name}} | {{ card.student_name }} </a></li>
     {% endfor %}
 </ul>
 

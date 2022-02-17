@@ -20,37 +20,37 @@ db = SQLAlchemy(app)
 
 # TODO relate student to card CardTemplate, StudentCard
 
-class Testatkarte(db.Model):
+class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(256), nullable=False)
+    project_name = db.Column(db.String(256), nullable=False)
     student_name = db.Column(db.String(256), nullable=False)
 
-class Meilenstein(db.Model):
+class Milestone(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     description = db.Column(db.String(256), nullable=False)
     finished = db.Column(db.DateTime())
     signed_by = db.Column(db.String(99))
 
-    card_id = db.Column(db.Integer, db.ForeignKey('testatkarte.id'),
+    card_id = db.Column(db.Integer, db.ForeignKey('card.id'),
         nullable=False)
-    cards = db.relationship(Testatkarte,
+    cards = db.relationship(Card,
         backref=db.backref('milestones', lazy=True))
 
 
 @app.route('/')
 def index():
-    cards = Testatkarte.query.all()
+    cards = Card.query.all()
     return render_template('index.html', 
         cards=cards)
 
 @app.route('/card/<int:cid>/show')
 def card_show(cid):
-    c = Testatkarte.query.get(cid)
+    c = Card.query.get(cid)
     return render_template('card_edit.html', card=c)
 
 @app.route('/milestone/<int:mid>/sign')
 def card_sign(mid):
-    m = Meilenstein.query.get(mid)
+    m = Milestone.query.get(mid)
     # TODO currentuser
     user = "bakera@tbs1.de"
     m.signed_by = user
@@ -61,15 +61,20 @@ def card_sign(mid):
     flash(f'Meilenstein {m.description} abgezeichnet')
     return redirect(url_for('index'))
 
+@app.route('/init_db')
 def init_db():
     app.logger.debug('Create db tables')
     db.create_all()
 
-    t = Testatkarte(student_name="Moni Muster", name="Testprojekt")
-    for m in range(5):
-        t.milestones.append(Meilenstein(description=f'Meilenstein {m}'))
+    for sname in ["Max Muster", "Moni Muster"]:
+        t = Card(student_name=sname, project_name="Testprojekt")
+        for m in range(5):
+            t.milestones.append(Milestone(description=f'Meilenstein {m}'))
 
-    db.session.add(t)
+        db.session.add(t)
+        
     db.session.commit()
 
-#init_db()
+    flash('db initialisiert')
+    return redirect(url_for('index'))
+
