@@ -18,8 +18,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #app.logger.debug(f'flask config {app.config}')
 
-# TODO relate student to card CardTemplate, StudentCard
-
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     project_name = db.Column(db.String(256), nullable=False)
@@ -33,7 +31,7 @@ class Milestone(db.Model):
 
     card_id = db.Column(db.Integer, db.ForeignKey('card.id'),
         nullable=False)
-    cards = db.relationship(Card,
+    card = db.relationship(Card,
         backref=db.backref('milestones', lazy=True))
 
 
@@ -58,7 +56,7 @@ def card_sign(mid):
     db.session.add(m)
     db.session.commit()
     app.logger.debug(f'milestone {m} signed by {user}')
-    flash(f'Meilenstein {m.description} abgezeichnet')
+    flash(f'Meilenstein {m.description} von {m.card.student_name} abgezeichnet')
     return redirect(url_for('index'))
 
 @app.route('/init_db')
@@ -72,7 +70,7 @@ def init_db():
             t.milestones.append(Milestone(description=f'Meilenstein {m}'))
 
         db.session.add(t)
-        
+
     db.session.commit()
 
     flash('db initialisiert')

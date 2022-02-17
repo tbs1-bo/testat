@@ -12,7 +12,13 @@ Testatkarte {{ card.name}}
 
 <ul>
     {% for m in card.milestones %}
-    <li> {{m.description }} {{m.finished}} <a href="{{url_for('card_sign', mid=m.id)}}">abzeichnen</a> </li>
+    <li> {{m.description }}
+        {% if not m.finished %}
+            <a href="{{url_for('card_sign', mid=m.id)}}">abzeichnen</a> 
+        {% else %}
+            ({{m.finished}})
+        {% endif %}
+    </li>
     {% endfor %}
 </ul>
 
