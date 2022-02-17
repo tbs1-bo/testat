@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %} 
+Testatkarte erstellen
+{% endblock %}
+
+{% block heading %} 
+Testatkarte erstellen
+{% endblock %}
+
+{% block body %}
+
+<form action="{{url_for('card_create')}}" method="POST">
+    <input name="project_name" placeholder="Projektname">
+    Meilensteine
+    <textarea name="milestones">
+Meilenstein 1
+Meilenstein 2
+    </textarea>
+
+    Schülerinnen und Schüler
+    <textarea name="student_names">
+Max Muster
+Moni Muster
+    </textarea>
+            <input type="submit" value="erstellen">
+</form>
+
+{% endblock %}
+

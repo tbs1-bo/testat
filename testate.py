@@ -46,6 +46,27 @@ def card_show(cid):
     c = Card.query.get(cid)
     return render_template('card_edit.html', card=c)
 
+@app.route('/card/create', methods=["GET", "POST"])
+def card_create():
+    if request.method == "GET":
+        return render_template('card_create.html')
+
+    elif request.method == "POST":
+        pname = request.form['project_name']
+        students = request.form['student_names'].split('\r\n')
+        students = [s.strip() for s in students if s.strip() != '']
+        milestones = request.form['milestones'].split('\r\n')
+        milestones = [m.strip() for m in milestones if m.strip() != '']
+        for s in students:
+            card = Card(project_name=pname, student_name=s)
+            for m in milestones:
+                card.milestones.append(Milestone(description=m))
+            db.session.add(card)
+        db.session.commit()
+
+        flash(f'Testatkarte erstellt')
+        return redirect(url_for('index'))
+
 @app.route('/milestone/<int:mid>/sign')
 def card_sign(mid):
     m = Milestone.query.get(mid)
