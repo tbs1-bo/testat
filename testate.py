@@ -44,9 +44,6 @@ class User(UserMixin):
     def get_id(self):
         return self.dbu.uid
 
-    def is_teacher(self):
-        return False # self.dbu.is_teacher
-
 class DBUser(db.Model):
     uid = db.Column(db.String(80), primary_key=True)
     is_teacher = db.Column(db.Boolean, default=False)

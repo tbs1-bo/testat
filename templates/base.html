@@ -25,9 +25,7 @@
 
     {% block menubar %}
     <a href="{{url_for('index')}}">🏠 Start </a> |
-    {% if current_user.is_teacher() %}
-      <a href="{{url_for('card_create')}}">Karte erstellen</a> |
-    {% endif %}
+    <a href="{{url_for('card_create')}}">Testatkarte erstellen</a> |
     <a href="{{url_for('init_db')}}">init db</a>
     {% endblock %}
 
