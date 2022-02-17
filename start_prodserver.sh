@@ -2,4 +2,4 @@
 
 . .env
 
-gunicorn --bind $TEST_IP:$TESTAT_PORT testate:app
+gunicorn --bind $TESTAT_IP:$TESTAT_PORT testate:app
