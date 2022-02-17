@@ -9,8 +9,9 @@ import os
 import smtplib
 
 APP_SECRET_KEY = os.environ.get('APP_SECRET_KEY', 'change this')
-DATAFILE = "testate.db"
+DATAFILE = os.environ.get("DATAFILE", "testate.db")
 SMTP_AUTHSERVER = os.environ.get('SMTP_AUTHSERVER', "smtp.example.com")
+ALLOWED_DOMAIN = os.environ.get('ALLOWED_DOMAIN', '')
 
 app = Flask(__name__)
 # can be generated with: python -c 'import secrets; print(secrets.token_hex())'
@@ -26,7 +27,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+app.logger.debug('env var configuration:')
 app.logger.debug(f'{SMTP_AUTHSERVER=}')
+app.logger.debug(f'{ALLOWED_DOMAIN=}')
+app.logger.debug(f'{DATAFILE=}')
+
 
 @login_manager.user_loader
 def load_user(userId):
@@ -54,7 +59,7 @@ class Card(db.Model):
 
     def completed_status(self):
         'Return number of completed and number of milestones'
-        compl = [m for m in self.milestones if m.finished is not None]
+        compl = [m for m in self.milestones if m.is_completed()]
         return len(compl), len(self.milestones)
 
 class Milestone(db.Model):
@@ -76,7 +81,7 @@ def _auth(username, password):
     s = smtplib.SMTP(SMTP_AUTHSERVER)
     s.starttls()
 
-    if '@tbs1.de' not in username:
+    if '@' + ALLOWED_DOMAIN not in username:
         return False
 
     if DBUser.query.get(username) is None:
@@ -121,8 +126,8 @@ def logout():
 @login_required
 def index():
     cards = Card.query.all()
-    projects = [p.project_name for p in Card.query.group_by(Card.project_name)]
-    return render_template('index.html', projects=projects,
+    projs = [p.project_name for p in Card.query.group_by(Card.project_name)]
+    return render_template('index.html', projects=projs,
         cards=cards)
 
 @app.route('/cards/show/<project_name>')

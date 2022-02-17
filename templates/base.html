@@ -25,7 +25,6 @@
 
     {% block menubar %}
     <a href="{{url_for('index')}}">🏠 Start </a> |
-    <a href="{{url_for('card_create')}}">Testatkarte erstellen</a> |
     {{ current_user.get_id() }}
     {% endblock %}
 
