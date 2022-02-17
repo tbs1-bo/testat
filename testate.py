@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, render_template, redirect, request, \
     flash, url_for
 from flask_sqlalchemy import SQLAlchemy
@@ -17,8 +18,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #app.logger.debug(f'flask config {app.config}')
 
+# TODO relate student to card CardTemplate, StudentCard
+
 class Testatkarte(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(256), nullable=False)
     student_name = db.Column(db.String(256), nullable=False)
 
 class Meilenstein(db.Model):
@@ -27,10 +31,10 @@ class Meilenstein(db.Model):
     finished = db.Column(db.DateTime())
     signed_by = db.Column(db.String(99))
 
-    testatkarte_id = db.Column(db.Integer, db.ForeignKey('testatkarte.id'),
+    card_id = db.Column(db.Integer, db.ForeignKey('testatkarte.id'),
         nullable=False)
-    testatkarte = db.relationship(Testatkarte,
-        backref=db.backref('meilensteine', lazy=True))
+    cards = db.relationship(Testatkarte,
+        backref=db.backref('milestones', lazy=True))
 
 
 @app.route('/')
@@ -39,13 +43,31 @@ def index():
     return render_template('index.html', 
         cards=cards)
 
+@app.route('/card/<int:cid>/show')
+def card_show(cid):
+    c = Testatkarte.query.get(cid)
+    return render_template('card_edit.html', card=c)
+
+@app.route('/milestone/<int:mid>/sign')
+def card_sign(mid):
+    m = Meilenstein.query.get(mid)
+    # TODO currentuser
+    user = "bakera@tbs1.de"
+    m.signed_by = user
+    m.finished = datetime.now()
+    db.session.add(m)
+    db.session.commit()
+    app.logger.debug(f'milestone {m} signed by {user}')
+    flash(f'Meilenstein {m.description} abgezeichnet')
+    return redirect(url_for('index'))
+
 def init_db():
     app.logger.debug('Create db tables')
     db.create_all()
 
-    t = Testatkarte(student_name="Moni Muster")
+    t = Testatkarte(student_name="Moni Muster", name="Testprojekt")
     for m in range(5):
-        t.meilensteine.append(Meilenstein(description=f'Meilenstein {m}'))
+        t.milestones.append(Meilenstein(description=f'Meilenstein {m}'))
 
     db.session.add(t)
     db.session.commit()

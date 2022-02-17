@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} 
+Testatkarte {{ card.name}}
+{% endblock %}
+
+{% block heading %} 
+Testatkarte {{ card.name}}
+{% endblock %}
+
+{% block body %}
+
+<ul>
+    {% for m in card.milestones %}
+    <li> {{m.description }} {{m.finished}} <a href="{{url_for('card_sign', mid=m.id)}}">abzeichnen</a> </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+
