@@ -15,11 +15,27 @@ Testatkarten
 
 <h2>Testatkarten</h2>
 
-<ul>
-    {% for card in cards %}
-    <li> <a href="{{url_for('card_show', cid=card.id)}}"> {{card.project_name}} | {{ card.student_name }} </a></li>
+<table>
+    <thead>
+        <tr>
+            <th>Projekt </th> <th>Student</th> <th>Vollständigkeit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for card in cards %}
+        {% set compl, tot = card.completed_status() %}
+        <tr>
+            <td>{{card.project_name}}</td>
+            <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
+            <td>{{ compl }} / {{ tot }}
+                {% if compl == tot %}
+                ☺️
+                {% endif %}
+            </td>
+        </tr>
     {% endfor %}
-</ul>
+
+    </tbody>
+</table>
 
 {% endblock %}
-

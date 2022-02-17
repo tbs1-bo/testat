@@ -23,6 +23,11 @@ class Card(db.Model):
     project_name = db.Column(db.String(256), nullable=False)
     student_name = db.Column(db.String(256), nullable=False)
 
+    def completed_status(self):
+        'Return number of completed and number of milestones'
+        compl = [m for m in self.milestones if m.finished is not None]
+        return len(compl), len(self.milestones)
+
 class Milestone(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     description = db.Column(db.String(256), nullable=False)
