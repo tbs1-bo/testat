@@ -1,3 +1,5 @@
 #!/bin/bash
 
-gunicorn testate:app
+. .env
+
+gunicorn --bind 0.0.0.0:5000 testate:app

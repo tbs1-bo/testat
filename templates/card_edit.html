@@ -10,20 +10,24 @@ Testatkarte {{ card.project_name}} von {{ card.student_name }}
 
 {% block body %}
 
-<ul>
+<ol>
     {% for m in card.milestones %}
     <li> 
-        {% if not m.finished %}
-            <a href="{{ url_for('card_sign', mid=m.id) }}">abzeichnen</a> 
-        {% else %}
-            <a href="{{ url_for('card_unsign', mid=m.id) }}">rückgängig</a> 
-            ({{m.finished.strftime('%Y-%m-%d') }}, {{m.signed_by}})
-        {% endif %}
-        |
         {{m.description }}
+        <br>
+        {% if not m.finished %}
+        <strong>
+            <a href="{{ url_for('card_sign', mid=m.id) }}">abzeichnen</a> 
+        </strong>
+        {% else %}
+            <a href="{{ url_for('card_unsign', mid=m.id) }}">rückgängig</a>
+            <em>
+                ({{m.finished.strftime('%Y-%m-%d') }}, {{m.signed_by}})
+            </em>
+        {% endif %}
     </li>
     {% endfor %}
-</ul>
+</ol>
 
 {% endblock %}
 

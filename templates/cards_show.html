@@ -18,13 +18,20 @@ Testatkarten "{{ project_name }}"
     </thead>
     <tbody>
         {% for card in cards %}
-        {% set compl, tot = card.completed_status() %}
+        {% set compl, tot = card.completed_status() %}        
         <tr>
             <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
-            <td>{{ compl }} / {{ tot }}
-                {% if compl == tot %}
-                ☺️
-                {% endif %}
+            <td>
+                {% for m in card.milestones %}
+                    <span title="{{ m.description }}">
+                        {% if m.is_completed() %}
+                        ⬤
+                        {% else %}
+                        ◯
+                        {% endif %}
+                    </span>
+                {% endfor %} |
+                {{ compl }} / {{ tot }}
             </td>
         </tr>
     {% endfor %}

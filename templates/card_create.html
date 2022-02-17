@@ -12,17 +12,15 @@ Testatkarte erstellen
 
 <form action="{{url_for('card_create')}}" method="POST">
     <input name="project_name" placeholder="Projektname">
-    Meilensteine
+    Meilensteine (ein Meilenstein pro Zeile)
     <textarea name="milestones">
 Meilenstein 1
-Meilenstein 2
-    </textarea>
+Meilenstein 2</textarea>
 
-    Schülerinnen und Schüler
+    Schülerinnen und Schüler (eine Name pro Zeile)
     <textarea name="student_names">
 Max Muster
-Moni Muster
-    </textarea>
+Moni Muster</textarea>
             <input type="submit" value="erstellen">
 </form>
 
