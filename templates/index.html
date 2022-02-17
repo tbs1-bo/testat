@@ -1,44 +1,25 @@
 {% extends "base.html" %}
 
 {% block title %} 
-Mängelmelder
+Testatkarten
 {% endblock %}
 
 {% block heading %} 
-Mängelmelder
+Testatkarten
 {% endblock %}
 
 {% block body %}
 
-<h2>Mangel melden</h2>
-{% for place in places %}
-<a href="{{url_for('add', place=place)}}">{{place}}</a> |
-{% endfor %}
+<h2>Testkarte erstellen</h2>
+# TODO
 
-<h2>Mangelliste</h2>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th> <th>Ort</th> <th>Beschreibung</th> <th>Ersteller</th>
-        <th>Erstelldatum</th> <th>Status</th>
-    </tr>
-    </thead>
+<h2>Testatkarten</h2>
 
-    <tbody>
-        {% for issue in issues %}
-        <tr>
-            <td>{{ issue.id }}</td>
-            <td>{{issue.place}}</td>
-            <td>{{ issue.description}}</td>
-            <td>{{ issue.author_email}}</td>
-            <td>{{ issue.created }}</td>
-            <td>{{ issue.status.name }}</td>
-        </tr>
-        {% endfor %}
-    
-    </tbody>
-</table>
-
+<ul>
+    {% for card in cards %}
+    <li> {{card.id}} </li>
+    {% endfor %}
+</ul>
 
 {% endblock %}
 

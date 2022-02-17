@@ -17,53 +17,37 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #app.logger.debug(f'flask config {app.config}')
 
-# TODO create data model
-
-class IssueStatus(db.Model):
+class Testatkarte(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(256), nullable=False)
+    student_name = db.Column(db.String(256), nullable=False)
 
-class Issue(db.Model):
+class Meilenstein(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    description = db.Column(db.String(256))
-    image_file = db.Column(db.String(256))
-    author_email = db.Column(db.String(256))
-    responsible_email = db.Column(db.String(256))
-    place = db.Column(db.String(256))
-    created = db.Column(db.DateTime(), server_default=func.now())
+    description = db.Column(db.String(256), nullable=False)
+    finished = db.Column(db.DateTime())
+    signed_by = db.Column(db.String(99))
 
-    status_id = db.Column(db.Integer, db.ForeignKey('issue_status.id'),
-        nullable=False, default=0)
-    status = db.relationship('IssueStatus',
-        backref=db.backref('issues', lazy=True))
+    testatkarte_id = db.Column(db.Integer, db.ForeignKey('testatkarte.id'),
+        nullable=False)
+    testatkarte = db.relationship(Testatkarte,
+        backref=db.backref('meilensteine', lazy=True))
 
-    def __repr__(self):
-        return f"Issue({self.id=}, {self.description=}, {self.place=}, {self.status_id=})"
 
 @app.route('/')
 def index():
-    issues = Issue.query.filter(Issue.description != '').\
-        order_by(Issue.created.desc())
-    places = set([i.place for i in issues])    
+    cards = Testatkarte.query.all()
     return render_template('index.html', 
-        issues=issues, places=places)
+        cards=cards)
 
 def init_db():
     app.logger.debug('Create db tables')
     db.create_all()
 
+    t = Testatkarte(student_name="Moni Muster")
+    for m in range(5):
+        t.meilensteine.append(Meilenstein(description=f'Meilenstein {m}'))
 
-    # TODO adjust
-    status = ["offen", "akzeptiert", "abgelehnt", "geschlossen"]
-    for s in status:
-        i = IssueStatus(name=s)
-        app.logger.debug(f'add issue status {i}')
-        db.session.add(i)
-
-    i = Issue(
-        description="Deckenplatte locker", place="Flur zu R49",
-        author_email="user@example.org", responsible_email="facility@example.org")
-    app.logger.debug(f'add issue {i}')
-    db.session.add(i)
-
+    db.session.add(t)
     db.session.commit()
+
+#init_db()
