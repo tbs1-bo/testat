@@ -2,4 +2,4 @@
 
 . .env
 
-gunicorn --bind 0.0.0.0:5000 testate:app
+gunicorn --bind $TEST_IP:$TESTAT_PORT testate:app
