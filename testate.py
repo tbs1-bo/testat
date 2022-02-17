@@ -11,8 +11,6 @@ import smtplib
 APP_SECRET_KEY = os.environ.get('APP_SECRET_KEY', 'change this')
 DATAFILE = "testate.db"
 SMTP_AUTHSERVER = os.environ.get('SMTP_AUTHSERVER', "smtp.example.com")
-ADMIN_ACCOUNTS = os.environ.get('ADMIN_ACCOUNTS', 'user1@example.org,user2@example.org')
-DEVELOPER_ACCOUNTS = os.environ.get('DEVELOPER_ACCOUNTS', 'user1@example.org,user2@example.org')
 
 app = Flask(__name__)
 # can be generated with: python -c 'import secrets; print(secrets.token_hex())'
@@ -46,7 +44,6 @@ class User(UserMixin):
 
 class DBUser(db.Model):
     uid = db.Column(db.String(80), primary_key=True)
-    is_teacher = db.Column(db.Boolean, default=False)
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -179,23 +176,3 @@ def card_signing(mid, sign):
     app.logger.debug(f'milestone {m} signed by {user}')
     flash(f'Meilenstein {m.description} von {m.card.student_name}.')
     return redirect(url_for('cards_show', project_name=m.card.project_name))
-
-@app.route('/init_db')
-@login_required
-def init_db():
-    app.logger.debug('Create db tables')
-    db.create_all()
-
-    for sname in ["Max Muster", "Moni Muster"]:
-        t = Card(student_name=sname, project_name="Testprojekt")
-        for m in range(5):
-            t.milestones.append(Milestone(description=f'Meilenstein {m}'))
-
-        db.session.add(t)
-
-    db.session.commit()
-
-    flash('db initialisiert')
-    return redirect(url_for('index'))
-
-#db.create_all()
