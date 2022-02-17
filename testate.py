@@ -89,7 +89,7 @@ def card_sign(mid):
     db.session.commit()
     app.logger.debug(f'milestone {m} signed by {user}')
     flash(f'Meilenstein {m.description} von {m.card.student_name} abgezeichnet')
-    return redirect(url_for('index'))
+    return redirect(url_for('cards_show', project_name=m.card.project_name))
 
 @app.route('/init_db')
 def init_db():

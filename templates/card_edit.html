@@ -16,7 +16,7 @@ Testatkarte {{ card.project_name}} von {{ card.student_name }}
         {% if not m.finished %}
             <a href="{{url_for('card_sign', mid=m.id)}}">abzeichnen</a> 
         {% else %}
-            ({{m.finished}})
+            ({{m.finished}}, {{m.signed_by}})
         {% endif %}
     </li>
     {% endfor %}
