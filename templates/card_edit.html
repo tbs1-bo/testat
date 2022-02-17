@@ -12,12 +12,14 @@ Testatkarte {{ card.project_name}} von {{ card.student_name }}
 
 <ul>
     {% for m in card.milestones %}
-    <li> {{m.description }}
+    <li> 
         {% if not m.finished %}
             <a href="{{url_for('card_sign', mid=m.id)}}">abzeichnen</a> 
         {% else %}
-            ({{m.finished}}, {{m.signed_by}})
+            ({{m.finished.strftime('%Y-%m-%d') }}, {{m.signed_by}})
         {% endif %}
+        |
+        {{m.description }}
     </li>
     {% endfor %}
 </ul>
