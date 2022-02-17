@@ -160,15 +160,24 @@ def card_create():
 @app.route('/milestone/<int:mid>/sign')
 @login_required
 def card_sign(mid):
+    flash('Meilenstein unterzeichnet.')
+    return card_signing(mid, True)
+
+@app.route('/milestone/<int:mid>/unsign')
+@login_required
+def card_unsign(mid):
+    flash('Unterschrift entfernt.')
+    return card_signing(mid, False)
+
+def card_signing(mid, sign):
     m = Milestone.query.get(mid)
-    # TODO currentuser
-    user = "bakera@tbs1.de"
+    user = current_user.get_id()
     m.signed_by = user
-    m.finished = datetime.now()
+    m.finished = datetime.now() if sign else None
     db.session.add(m)
     db.session.commit()
     app.logger.debug(f'milestone {m} signed by {user}')
-    flash(f'Meilenstein {m.description} von {m.card.student_name} abgezeichnet')
+    flash(f'Meilenstein {m.description} von {m.card.student_name}.')
     return redirect(url_for('cards_show', project_name=m.card.project_name))
 
 @app.route('/init_db')
