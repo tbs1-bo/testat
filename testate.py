@@ -13,17 +13,12 @@ app = Flask(__name__)
 app.config.from_object(config)
 app.config.from_envvar('TESTAT_CONF')
 
-#APP_SECRET_KEY = os.environ.get('APP_SECRET_KEY', 'change this')
-#DATAFILE = os.environ.get("DATAFILE", "testate.db")
+# TODO solve problem with subroutes
+# https://stackoverflow.com/questions/18967441/add-a-prefix-to-all-flask-routes/18969161#18969161
+
 SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
 ALLOWED_DOMAIN = app.config['ALLOWED_DOMAIN']
 
-# can be generated with: python -c 'import secrets; print(secrets.token_hex())'
-#app.secret_key = APP_SECRET_KEY
-
-#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.environ["PWD"]}/{DATAFILE}'
-# defaults to false in future release (2022-02-13)
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #app.logger.debug(f'flask config {app.config}')
 
@@ -34,7 +29,6 @@ login_manager.login_view = 'login'
 app.logger.debug('env var configuration:')
 app.logger.debug(f'SMTP_AUTHSERVER={SMTP_AUTHSERVER}')
 app.logger.debug(f'ALLOWED_DOMAIN={ALLOWED_DOMAIN}')
-#app.logger.debug(f'DATAFILE={DATAFILE}')
 
 
 @login_manager.user_loader
