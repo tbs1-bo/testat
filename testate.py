@@ -7,19 +7,23 @@ from flask_login import LoginManager, UserMixin, login_required, \
 from sqlalchemy.sql import func
 import os
 import smtplib
-
-APP_SECRET_KEY = os.environ.get('APP_SECRET_KEY', 'change this')
-DATAFILE = os.environ.get("DATAFILE", "testate.db")
-SMTP_AUTHSERVER = os.environ.get('SMTP_AUTHSERVER', "smtp.example.com")
-ALLOWED_DOMAIN = os.environ.get('ALLOWED_DOMAIN', '')
+import config
 
 app = Flask(__name__)
-# can be generated with: python -c 'import secrets; print(secrets.token_hex())'
-app.secret_key = APP_SECRET_KEY
+app.config.from_object(config)
+app.config.from_envvar('TESTAT_CONF')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.environ["PWD"]}/{DATAFILE}'
+#APP_SECRET_KEY = os.environ.get('APP_SECRET_KEY', 'change this')
+#DATAFILE = os.environ.get("DATAFILE", "testate.db")
+SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
+ALLOWED_DOMAIN = app.config['ALLOWED_DOMAIN']
+
+# can be generated with: python -c 'import secrets; print(secrets.token_hex())'
+#app.secret_key = APP_SECRET_KEY
+
+#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.environ["PWD"]}/{DATAFILE}'
 # defaults to false in future release (2022-02-13)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #app.logger.debug(f'flask config {app.config}')
 
@@ -30,7 +34,7 @@ login_manager.login_view = 'login'
 app.logger.debug('env var configuration:')
 app.logger.debug(f'SMTP_AUTHSERVER={SMTP_AUTHSERVER}')
 app.logger.debug(f'ALLOWED_DOMAIN={ALLOWED_DOMAIN}')
-app.logger.debug(f'DATAFILE={DATAFILE}')
+#app.logger.debug(f'DATAFILE={DATAFILE}')
 
 
 @login_manager.user_loader

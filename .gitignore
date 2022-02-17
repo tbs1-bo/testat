@@ -3,3 +3,4 @@ poetry.lock
 __pycache__/
 
 testate.db
+config.local.py
