@@ -28,9 +28,9 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 app.logger.debug('env var configuration:')
-app.logger.debug(f'{SMTP_AUTHSERVER=}')
-app.logger.debug(f'{ALLOWED_DOMAIN=}')
-app.logger.debug(f'{DATAFILE=}')
+app.logger.debug(f'SMTP_AUTHSERVER={SMTP_AUTHSERVER}')
+app.logger.debug(f'ALLOWED_DOMAIN={ALLOWED_DOMAIN}')
+app.logger.debug(f'DATAFILE={DATAFILE}')
 
 
 @login_manager.user_loader
