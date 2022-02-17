@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" 
+        href="{{ url_for('static', filename='water.css') }}">
+    
+    <title>
+    {% block title %}
+    {% endblock %}
+    </title>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <blockquote>
+      {% for message in messages %}
+        {{ message }}
+      {% endfor %}
+    </blockquote>
+    {% endif %}
+    {% endwith %}
+
+    {% block menubar %}
+    <a href="{{url_for('index')}}">🏠 Start </a>
+    {% endblock %}
+
+    <h1>{% block heading %} {% endblock %}</h1>
+
+    {% block body %}
+    {% endblock %}
+
+</body>
+
+</html>
