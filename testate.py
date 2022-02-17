@@ -43,8 +43,14 @@ class Milestone(db.Model):
 @app.route('/')
 def index():
     cards = Card.query.all()
-    return render_template('index.html', 
+    projects = [p.project_name for p in Card.query.group_by(Card.project_name)]
+    return render_template('index.html', projects=projects,
         cards=cards)
+
+@app.route('/cards/show/<project_name>')
+def cards_show(project_name):
+    cards = Card.query.filter_by(project_name=project_name)
+    return render_template('cards_show.html', cards=cards, project_name=project_name)
 
 @app.route('/card/<int:cid>/show')
 def card_show(cid):

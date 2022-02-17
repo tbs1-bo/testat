@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %} 
+Testatkarten
+{% endblock %}
+
+{% block heading %} 
+Testatkarten "{{ project_name }}"
+{% endblock %}
+
+{% block body %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Student</th> <th>Vollständigkeit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for card in cards %}
+        {% set compl, tot = card.completed_status() %}
+        <tr>
+            <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
+            <td>{{ compl }} / {{ tot }}
+                {% if compl == tot %}
+                ☺️
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}

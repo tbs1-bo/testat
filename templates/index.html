@@ -10,29 +10,40 @@ Testatkarten
 
 {% block body %}
 
-<h2>Testatkarten</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Projekt </th> <th>Student</th> <th>Vollständigkeit</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for card in cards %}
-        {% set compl, tot = card.completed_status() %}
-        <tr>
-            <td>{{card.project_name}}</td>
-            <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
-            <td>{{ compl }} / {{ tot }}
-                {% if compl == tot %}
-                ☺️
-                {% endif %}
-            </td>
-        </tr>
+<h2>Projekte</h2>
+<ul>
+    {% for p in projects %}
+        <li> <a href="{{url_for('cards_show', project_name=p)}}"> {{ p }} </a></li>
     {% endfor %}
+</ul>
 
-    </tbody>
-</table>
+<h2>Alle Testatkarten</h2>
+
+<details>
+    <summary>alle</summary>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Projekt </th> <th>Student</th> <th>Vollständigkeit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for card in cards %}
+            {% set compl, tot = card.completed_status() %}
+            <tr>
+                <td>{{card.project_name}}</td>
+                <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
+                <td>{{ compl }} / {{ tot }}
+                    {% if compl == tot %}
+                    ☺️
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</details>
 
 {% endblock %}
