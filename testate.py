@@ -24,6 +24,8 @@ db = SQLAlchemy(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+# TODO needs view
+# https://flask.palletsprojects.com/en/2.0.x/views/
 login_manager.login_view = 'login'
 
 app.logger.debug('env var configuration:')
