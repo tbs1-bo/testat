@@ -25,7 +25,8 @@
 
     {% block menubar %}
     <a href="{{url_for('index')}}">🏠 Start </a> |
-    {{ current_user.get_id() }}
+    {{ current_user.get_id() }} |
+    <a href="{{url_for('logout')}}">logout</a> |
     {% endblock %}
 
     <h1>{% block heading %} {% endblock %}</h1>

@@ -6,7 +6,6 @@ FLASK_ENV = 'development'
 
 SMTP_AUTHSERVER = 'smtp.example.com'
 ALLOWED_DOMAIN = 'exmaple.com'
-APPLICATION_ROOT = '/testat'
 
 import os
 SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.environ["PWD"]}/testate.db'

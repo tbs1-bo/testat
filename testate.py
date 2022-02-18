@@ -118,7 +118,7 @@ def logout():
     app.logger.debug(f'logout {current_user}')
     flash(f'ausgeloggt')
     logout_user()
-    return redirect('/')
+    return redirect(url_for('index'))
 
 @app.route('/')
 @login_required
