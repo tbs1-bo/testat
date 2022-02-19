@@ -14,7 +14,6 @@ app.logger.info(f'reading config file from env var TESTAT_CONF')
 app.config.from_envvar('TESTAT_CONF')
 
 SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
-ALLOWED_DOMAIN = app.config['ALLOWED_DOMAIN']
 APP_DOMAIN = app.config['APP_DOMAIN']
 
 db = SQLAlchemy(app)
@@ -26,7 +25,6 @@ login_manager.login_view = 'login'
 
 app.logger.info('env var configuration:')
 app.logger.info(f'SMTP_AUTHSERVER={SMTP_AUTHSERVER}')
-app.logger.info(f'ALLOWED_DOMAIN={ALLOWED_DOMAIN}')
 app.logger.info(f'APP_DOMAIN={APP_DOMAIN}')
 
 
@@ -108,14 +106,13 @@ class Milestone(db.Model):
 
 def _auth(username, password):
     app.logger.debug(f'auth {username}')
-    s = smtplib.SMTP(SMTP_AUTHSERVER)
-    s.starttls()
-
-    if '@' + ALLOWED_DOMAIN not in username:
-        return False
 
     if DBUser.query.get(username) is None:
+        # User not found in database
         return False
+
+    s = smtplib.SMTP(SMTP_AUTHSERVER)
+    s.starttls()
 
     try:
         s.login(username, password)
