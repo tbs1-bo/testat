@@ -191,11 +191,11 @@ def card_create():
         pname = request.form['project_name']
         if pname.strip() == '':
             flash('Projektname darf nicht leer sein')
-            return redirect(url_for('index'))
+            return redirect(url_for('card_create'))
 
         if pname in project_names():
             flash(f'Projektname "{pname}" doppelt')
-            return redirect(url_for('index'))
+            return redirect(url_for('card_create'))
 
         students = request.form['student_names'].split('\r\n')
         students = [s.strip() for s in students if s.strip() != '']

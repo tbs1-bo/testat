@@ -11,7 +11,7 @@ Projekt erstellen
 {% block body %}
 
 <form action="{{url_for('card_create')}}" method="POST">
-    <input name="project_name" placeholder="Projektname">
+    <input name="project_name" placeholder="Projektname" required>
     Meilensteine (ein Meilenstein pro Zeile)
     <textarea name="milestones">
 Meilenstein 1
