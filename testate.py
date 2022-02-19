@@ -14,9 +14,6 @@ app.config.from_object(config)
 app.logger.info(f'reading config file from env var TESTAT_CONF')
 app.config.from_envvar('TESTAT_CONF')
 
-# TODO solve problem with subroutes, proxy, redirect
-# https://stackoverflow.com/questions/18967441/add-a-prefix-to-all-flask-routes/18969161#18969161
-
 SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
 ALLOWED_DOMAIN = app.config['ALLOWED_DOMAIN']
 APP_DOMAIN = app.config['APP_DOMAIN']
@@ -26,8 +23,6 @@ db = SQLAlchemy(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-# TODO needs view
-# https://flask.palletsprojects.com/en/2.0.x/views/
 login_manager.login_view = 'login'
 
 app.logger.info('env var configuration:')
