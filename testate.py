@@ -158,7 +158,8 @@ def project_names():
 @app.route('/cards/show/<project_name>')
 @login_required
 def cards_show(project_name):
-    cards = Card.query.filter_by(project_name=project_name)
+    cards = Card.query.filter_by(
+        project_name=project_name).order_by(Card.student_name)
     return render_template('cards_show.html', cards=cards, project_name=project_name)
 
 @app.route('/card/<int:cid>/show')
@@ -223,5 +224,5 @@ def card_signing(mid, sign):
 
     app.logger.info(f'milestone {m} ({m.description}) from {m.card.student_name} signed ({sign}) by {user}')
     flash(f'Meilenstein {m.description} von {m.card.student_name}.')
-    
+
     return redirect(url_for('cards_show', project_name=m.card.project_name))
