@@ -212,12 +212,16 @@ def card_unsign(mid):
     return card_signing(mid, False)
 
 def card_signing(mid, sign):
+    'sign (sign=True) or unsign (sign=False) a milestone on a card'
+
     m = Milestone.query.get(mid)
     user = current_user.get_id()
     m.signed_by = user
     m.finished = datetime.now() if sign else None
     db.session.add(m)
     db.session.commit()
+
     app.logger.info(f'milestone {m} ({m.description}) from {m.card.student_name} signed ({sign}) by {user}')
     flash(f'Meilenstein {m.description} von {m.card.student_name}.')
+    
     return redirect(url_for('cards_show', project_name=m.card.project_name))
