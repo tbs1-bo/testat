@@ -50,10 +50,10 @@ def load_user(userId):
 class User(UserMixin):
     def __init__(self, uid):
         self.dbu = DBUser.query.get(uid)
-        if self.dbu is None:
-            self.dbu = DBUser(uid=uid)
-            db.session.add(self.dbu)
-            db.session.commit()
+        #if self.dbu is None:
+        #    self.dbu = DBUser(uid=uid)
+        #    db.session.add(self.dbu)
+        #    db.session.commit()
 
     def get_id(self):
         return self.dbu.uid
@@ -105,10 +105,10 @@ class Milestone(db.Model):
         return self.finished is not None
 
 def _auth(username, password):
-    app.logger.debug(f'auth {username}')
+    app.logger.info(f'auth {username}')
 
     if DBUser.query.get(username) is None:
-        # User not found in database
+        app.logger.debug(f'{username} not found in database')
         return False
 
     s = smtplib.SMTP(SMTP_AUTHSERVER)

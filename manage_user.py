@@ -10,7 +10,9 @@ def main():
     if sys.argv[1] == 'add':
         # add
         uid = input('Username? ')
-        testate.User(uid)
+        dbu = testate.DBUser(uid=uid)
+        testate.db.session.add(dbu)
+        testate.db.session.commit()
 
     elif sys.argv[1] == 'ls':
         for user in testate.User.all():
