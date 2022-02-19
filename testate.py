@@ -11,6 +11,7 @@ import config
 
 app = Flask(__name__)
 app.config.from_object(config)
+app.logger.debug(f'reading config file from env var TESTAT_CONF')
 app.config.from_envvar('TESTAT_CONF')
 
 # TODO solve problem with subroutes
@@ -42,12 +43,23 @@ class User(UserMixin):
     def __init__(self, uid):
         self.dbu = DBUser.query.get(uid)
         if self.dbu is None:
-            self.dbu = DBUser(uid=uid, kuerzel=self.kuerzel)
+            self.dbu = DBUser(uid=uid)
             db.session.add(self.dbu)
             db.session.commit()
 
     def get_id(self):
         return self.dbu.uid
+
+    def delete(self):
+        db.session.delete(self.dbu)
+        db.session.commit()
+
+    @classmethod
+    def all(cls):
+        return [User(dbu.uid) for dbu in DBUser.query.all()]
+
+    def __repr__(self):
+        return f'User(uid={self.get_id()})'
 
 class DBUser(db.Model):
     uid = db.Column(db.String(80), primary_key=True)
