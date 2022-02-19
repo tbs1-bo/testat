@@ -17,7 +17,6 @@ SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
 APP_DOMAIN = app.config['APP_DOMAIN']
 
 db = SQLAlchemy(app)
-#app.logger.debug(f'flask config {app.config}')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -50,10 +49,6 @@ def load_user(userId):
 class User(UserMixin):
     def __init__(self, uid):
         self.dbu = DBUser.query.get(uid)
-        #if self.dbu is None:
-        #    self.dbu = DBUser(uid=uid)
-        #    db.session.add(self.dbu)
-        #    db.session.commit()
 
     def get_id(self):
         return self.dbu.uid
@@ -193,8 +188,10 @@ def card_create():
         milestones = request.form['milestones'].split('\r\n')
         milestones = [m.strip() for m in milestones if m.strip() != '']
         for s in students:
+            app.logger.debug(f'create card for project "{pname}" and student "{s}"')
             card = Card(project_name=pname, student_name=s)
             for m in milestones:
+                app.logger.debug(f'create milestone "{m}"')
                 card.milestones.append(Milestone(description=m))
             db.session.add(card)
         db.session.commit()
