@@ -9,8 +9,6 @@ import os
 import smtplib
 import config
 
-# TODO empty/double project
-
 app = Flask(__name__)
 app.config.from_object(config)
 app.logger.info(f'reading config file from env var TESTAT_CONF')
@@ -164,9 +162,12 @@ def logout():
 @login_required
 def index():
     cards = Card.query.all()
-    projs = [p.project_name for p in Card.query.group_by(Card.project_name)]
-    return render_template('index.html', projects=projs,
+    return render_template('index.html', projects=project_names(),
         cards=cards)
+
+def project_names():
+    projs = [p.project_name for p in Card.query.group_by(Card.project_name)]
+    return projs
 
 @app.route('/cards/show/<project_name>')
 @login_required
@@ -188,6 +189,14 @@ def card_create():
 
     elif request.method == "POST":
         pname = request.form['project_name']
+        if pname.strip() == '':
+            flash('Projektname darf nicht leer sein')
+            return redirect(url_for('index'))
+
+        if pname in project_names():
+            flash(f'Projektname "{pname}" doppelt')
+            return redirect(url_for('index'))
+
         students = request.form['student_names'].split('\r\n')
         students = [s.strip() for s in students if s.strip() != '']
         milestones = request.form['milestones'].split('\r\n')
