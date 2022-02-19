@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_required, \
     login_user, logout_user, current_user
 from sqlalchemy.sql import func
-import os
 import smtplib
 import config
 
@@ -225,6 +224,6 @@ def card_signing(mid, sign):
     m.finished = datetime.now() if sign else None
     db.session.add(m)
     db.session.commit()
-    app.logger.info(f'milestone {m} signed by {user}')
+    app.logger.info(f'milestone {m} ({m.description}) from {m.card.student_name} signed ({sign}) by {user}')
     flash(f'Meilenstein {m.description} von {m.card.student_name}.')
     return redirect(url_for('cards_show', project_name=m.card.project_name))
