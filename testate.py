@@ -14,11 +14,12 @@ app.config.from_object(config)
 app.logger.info(f'reading config file from env var TESTAT_CONF')
 app.config.from_envvar('TESTAT_CONF')
 
-# TODO solve problem with subroutes
+# TODO solve problem with subroutes, proxy, redirect
 # https://stackoverflow.com/questions/18967441/add-a-prefix-to-all-flask-routes/18969161#18969161
 
 SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
 ALLOWED_DOMAIN = app.config['ALLOWED_DOMAIN']
+APP_DOMAIN = app.config['APP_DOMAIN']
 
 db = SQLAlchemy(app)
 #app.logger.debug(f'flask config {app.config}')
@@ -32,6 +33,20 @@ login_manager.login_view = 'login'
 app.logger.info('env var configuration:')
 app.logger.info(f'SMTP_AUTHSERVER={SMTP_AUTHSERVER}')
 app.logger.info(f'ALLOWED_DOMAIN={ALLOWED_DOMAIN}')
+app.logger.info(f'APP_DOMAIN={APP_DOMAIN}')
+
+
+# https://github.com/Azure-Samples/ms-identity-python-webapp/issues/51#issuecomment-718990449
+class CustomProxyFix(object):
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        environ['HTTP_HOST'] = APP_DOMAIN
+        environ['wsgi.url_scheme'] = 'https'
+        return self.app(environ, start_response)
+
+app.wsgi_app = CustomProxyFix(app.wsgi_app)
 
 
 @login_manager.user_loader

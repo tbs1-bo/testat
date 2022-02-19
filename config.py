@@ -4,6 +4,8 @@ SECRET_KEY = 'change this'
 FLASK_APP = 'testate'
 FLASK_ENV = 'development'
 
+APP_DOMAIN = 'example.com'
+
 SMTP_AUTHSERVER = 'smtp.example.com'
 ALLOWED_DOMAIN = 'exmaple.com'
 
