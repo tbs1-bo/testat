@@ -9,6 +9,8 @@ import os
 import smtplib
 import config
 
+# TODO empty/double project
+
 app = Flask(__name__)
 app.config.from_object(config)
 app.logger.info(f'reading config file from env var TESTAT_CONF')
@@ -42,8 +44,9 @@ class CustomProxyFix(object):
         self.app = app
 
     def __call__(self, environ, start_response):
-        environ['HTTP_HOST'] = APP_DOMAIN
-        environ['wsgi.url_scheme'] = 'https'
+        if APP_DOMAIN:
+            environ['HTTP_HOST'] = APP_DOMAIN
+            environ['wsgi.url_scheme'] = 'https'
         return self.app(environ, start_response)
 
 app.wsgi_app = CustomProxyFix(app.wsgi_app)
