@@ -89,6 +89,14 @@ class Card(db.Model):
         compl = [m for m in self.milestones if m.is_completed()]
         return len(compl), len(self.milestones)
 
+    def delete(self):
+        # delete milestones assigned to this card before deleting the card
+        for m in self.milestones:
+            db.session.delete(m)
+
+        db.session.delete(self)
+        db.session.commit()
+
 class Milestone(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     description = db.Column(db.String(256), nullable=False)
