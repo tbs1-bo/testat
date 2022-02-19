@@ -11,7 +11,7 @@ import config
 
 app = Flask(__name__)
 app.config.from_object(config)
-app.logger.debug(f'reading config file from env var TESTAT_CONF')
+app.logger.info(f'reading config file from env var TESTAT_CONF')
 app.config.from_envvar('TESTAT_CONF')
 
 # TODO solve problem with subroutes
@@ -29,9 +29,9 @@ login_manager.init_app(app)
 # https://flask.palletsprojects.com/en/2.0.x/views/
 login_manager.login_view = 'login'
 
-app.logger.debug('env var configuration:')
-app.logger.debug(f'SMTP_AUTHSERVER={SMTP_AUTHSERVER}')
-app.logger.debug(f'ALLOWED_DOMAIN={ALLOWED_DOMAIN}')
+app.logger.info('env var configuration:')
+app.logger.info(f'SMTP_AUTHSERVER={SMTP_AUTHSERVER}')
+app.logger.info(f'ALLOWED_DOMAIN={ALLOWED_DOMAIN}')
 
 
 @login_manager.user_loader
@@ -195,6 +195,6 @@ def card_signing(mid, sign):
     m.finished = datetime.now() if sign else None
     db.session.add(m)
     db.session.commit()
-    app.logger.debug(f'milestone {m} signed by {user}')
+    app.logger.info(f'milestone {m} signed by {user}')
     flash(f'Meilenstein {m.description} von {m.card.student_name}.')
     return redirect(url_for('cards_show', project_name=m.card.project_name))
