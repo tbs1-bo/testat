@@ -57,6 +57,9 @@ class User(UserMixin):
         db.session.delete(self.dbu)
         db.session.commit()
 
+    def is_admin(self):
+        return self.dbu.is_admin
+
     @classmethod
     def all(cls):
         return [User(dbu.uid) for dbu in DBUser.query.all()]
@@ -66,6 +69,8 @@ class User(UserMixin):
 
 class DBUser(db.Model):
     uid = db.Column(db.String(80), primary_key=True)
+    is_admin = db.Column(db.Boolean, default=False)
+
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
