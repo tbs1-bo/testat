@@ -100,7 +100,7 @@ class Milestone(db.Model):
         return self.finished is not None
 
 def _auth(username, password):
-    app.logger.info(f'auth {username}')
+    app.logger.info(f'auth "{username}"')
 
     if DBUser.query.get(username) is None:
         app.logger.debug(f'{username} not found in database')
@@ -115,6 +115,7 @@ def _auth(username, password):
         return True
 
     except smtplib.SMTPAuthenticationError:
+        app.logger.debug(f'unable to login at {username}@{SMTP_AUTHSERVER}')
         return False
 
 @app.route('/login', methods=["GET", "POST"])
