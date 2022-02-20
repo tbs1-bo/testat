@@ -164,7 +164,7 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    cards = Card.all_visible()
+    cards = Card.query.all()
     return render_template('index.html', projects=project_names(),
         cards=cards)
 
@@ -185,6 +185,20 @@ def cards_show(project_name):
 def card_show(cid):
     c = Card.query.get(cid)
     return render_template('card_edit.html', card=c)
+
+@app.route('/cards/hide/<project_name>')
+def cards_hide(project_name):
+    for c in Card.query.filter_by(project_name=project_name):
+        c.visibility(False)
+
+    return redirect(url_for('index'))
+
+@app.route('/card/unhide/<cid>')
+def card_unhide(cid):
+    c = Card.query.get(cid)
+    c.visibility(True)
+
+    return redirect(url_for('index'))
 
 @app.route('/card/create', methods=["GET", "POST"])
 @login_required
@@ -244,3 +258,4 @@ def card_signing(mid, sign):
     flash(f'Meilenstein {m.description} von {m.card.student_name}.')
 
     return redirect(url_for('cards_show', project_name=m.card.project_name))
+

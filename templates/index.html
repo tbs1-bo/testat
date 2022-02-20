@@ -13,7 +13,12 @@ Testatkarten
 <h2>Projekte</h2>
 <ul>
     {% for p in projects %}
-        <li> <a href="{{url_for('cards_show', project_name=p)}}"> {{ p }} </a></li>
+        <li> 
+            <a href="{{url_for('cards_show', project_name=p)}}"> {{ p }} </a>
+            {% if current_user.is_admin() %}
+                <a href="{{url_for('cards_hide', project_name=p)}}"> *hide* </a>            
+            {% endif %}
+        </li>
     {% endfor %}
 </ul>
 
@@ -21,7 +26,9 @@ Testatkarten
     ➕ <a href="{{url_for('card_create')}}">Projekt erstellen</a>
 </strong>
 
-<h2>Alle Testatkarten</h2>
+{% if current_user.is_admin() %}
+
+<h2>*Alle Testatkarten*</h2>
 
 <details>
     <summary>zeigen</summary>
@@ -36,7 +43,11 @@ Testatkarten
             {% for card in cards %}
             {% set compl, tot = card.completed_status() %}
             <tr>
-                <td>{{card.project_name}}</td>
+                <td>{{card.project_name}}
+                    {% if not card.is_visible %}
+                    <a href="{{url_for('card_unhide', cid=card.id)}}">*unhide*</a>
+                    {% endif %}
+                </td>
                 <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
                 <td>{{ compl }} / {{ tot }}
                     {% if compl == tot %}
@@ -49,5 +60,7 @@ Testatkarten
         </tbody>
     </table>
 </details>
+
+{% endif %}
 
 {% endblock %}
