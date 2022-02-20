@@ -76,6 +76,7 @@ class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     project_name = db.Column(db.String(256), nullable=False)
     student_name = db.Column(db.String(256), nullable=False)
+    is_visible = db.Column(db.Boolean, default=True)    
 
     def completed_status(self):
         'Return number of completed and number of milestones'
@@ -89,6 +90,16 @@ class Card(db.Model):
 
         db.session.delete(self)
         db.session.commit()
+
+    def visibility(self, status):
+        'change visibility of this card'
+        self.is_visible = status
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def all_visible(cls):
+        return cls.query.filter_by(is_visible=True)
 
 class Milestone(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -153,18 +164,19 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    cards = Card.query.all()
+    cards = Card.all_visible()
     return render_template('index.html', projects=project_names(),
         cards=cards)
 
 def project_names():
-    projs = [p.project_name for p in Card.query.group_by(Card.project_name)]
+    projs = [p.project_name for p in Card.all_visible().group_by(
+        Card.project_name)]
     return projs
 
 @app.route('/cards/show/<project_name>')
 @login_required
 def cards_show(project_name):
-    cards = Card.query.filter_by(
+    cards = Card.all_visible().filter_by(
         project_name=project_name).order_by(Card.student_name)
     return render_template('cards_show.html', cards=cards, project_name=project_name)
 
@@ -203,7 +215,7 @@ def card_create():
             db.session.add(card)
         db.session.commit()
 
-        flash(f'Testatkarte erstellt')
+        flash(f'Testatkarten für Projekt "{pname}" erstellt')
         return redirect(url_for('index'))
 
 @app.route('/milestone/<int:mid>/sign')
