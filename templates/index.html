@@ -37,6 +37,7 @@ Testatkarten
         <thead>
             <tr>
                 <th>Projekt </th> <th>Student</th> <th>Vollständigkeit</th>
+                <th>Sichtbarkeit</th>
             </tr>
         </thead>
         <tbody>
@@ -44,15 +45,20 @@ Testatkarten
             {% set compl, tot = card.completed_status() %}
             <tr>
                 <td>{{card.project_name}}
-                    {% if not card.is_visible %}
-                    <a href="{{url_for('card_unhide', cid=card.id)}}">*unhide*</a>
-                    {% endif %}
                 </td>
                 <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
                 <td>{{ compl }} / {{ tot }}
                     {% if compl == tot %}
                     ☺️
                     {% endif %}
+                </td>
+                <td>
+                    {% if card.is_visible %}
+                    <a href="{{url_for('card_visibility', cid=card.id, visible=0)}}">*hide*</a>
+                    {% else %}
+                    <a href="{{url_for('card_visibility', cid=card.id, visible=1)}}">*unhide*</a>
+                    {% endif %}
+
                 </td>
             </tr>
         {% endfor %}

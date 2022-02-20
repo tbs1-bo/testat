@@ -193,10 +193,10 @@ def cards_hide(project_name):
 
     return redirect(url_for('index'))
 
-@app.route('/card/unhide/<cid>')
-def card_unhide(cid):
+@app.route('/card/<cid>/visiblity/<visible>')
+def card_visibility(cid, visible):
     c = Card.query.get(cid)
-    c.visibility(True)
+    c.visibility(visible == "1")
 
     return redirect(url_for('index'))
 
