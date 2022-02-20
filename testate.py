@@ -255,7 +255,7 @@ def card_signing(mid, sign):
     db.session.commit()
 
     app.logger.info(f'milestone {m} ({m.description}) from {m.card.student_name} signed ({sign}) by {user}')
-    flash(f'Meilenstein {m.description} von {m.card.student_name}.')
+    flash(f'Meilenstein "{m.description}" von "{m.card.student_name}".')
 
     return redirect(url_for('cards_show', project_name=m.card.project_name))
 
