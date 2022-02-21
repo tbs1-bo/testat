@@ -4,7 +4,6 @@ from flask import Flask, render_template, redirect, request, \
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_required, \
     login_user, logout_user, current_user
-from sqlalchemy.sql import func
 import smtplib
 import config
 
@@ -84,6 +83,7 @@ class Card(db.Model):
         return len(compl), len(self.milestones)
 
     def delete(self):
+        'delete card and its milestones'
         # delete milestones assigned to this card before deleting the card
         for m in self.milestones:
             db.session.delete(m)
@@ -125,7 +125,7 @@ def _auth(username, password):
     app.logger.info(f'auth "{username}"')
 
     if DBUser.query.get(username) is None:
-        app.logger.debug(f'{username} not found in database')
+        app.logger.debug(f'"{username}" not found in database')
         return False
 
     s = smtplib.SMTP(SMTP_AUTHSERVER)
@@ -145,8 +145,9 @@ def login():
     if request.method == "GET":
         return render_template('login.html')
     elif request.method == "POST":
-        app.logger.debug("trying to login")
-        if _auth(request.form['username'], request.form['password']):
+        username = request.form['username']
+        app.logger.debug(f'trying to login "{username}"')
+        if _auth(username, request.form['password']):
             flash('Login erfolgreich')
             app.logger.debug(f'login successful {current_user}')
             #next = request.args.get('next')
