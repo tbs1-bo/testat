@@ -101,6 +101,12 @@ class Card(db.Model):
     def all_visible(cls):
         return cls.query.filter_by(is_visible=True)
 
+def project_names():
+    projs = [p.project_name for p in Card.all_visible().group_by(
+        Card.project_name)]
+    return projs
+
+
 class Milestone(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     description = db.Column(db.String(256), nullable=False)
@@ -176,25 +182,7 @@ def admin():
     return render_template('admin.html', projects=project_names(),
         cards=cards)
 
-def project_names():
-    projs = [p.project_name for p in Card.all_visible().group_by(
-        Card.project_name)]
-    return projs
-
-@app.route('/cards/show/<project_name>')
-@login_required
-def cards_show(project_name):
-    cards = Card.all_visible().filter_by(
-        project_name=project_name).order_by(Card.student_name)
-    return render_template('cards_show.html', cards=cards, project_name=project_name)
-
-@app.route('/card/<int:cid>/show')
-@login_required
-def card_show(cid):
-    c = Card.query.get(cid)
-    return render_template('card_edit.html', card=c)
-
-@app.route('/cards/hide/<project_name>')
+@app.route('/cards/<project_name>/hide')
 @login_required
 def admin_cards_hide(project_name):
     if not current_user.is_admin():
@@ -215,6 +203,19 @@ def admin_card_visibility(cid, visible):
     c.visibility(visible == "1")
 
     return redirect(url_for('admin'))
+
+@app.route('/cards/show/<project_name>')
+@login_required
+def cards_show(project_name):
+    cards = Card.all_visible().filter_by(
+        project_name=project_name).order_by(Card.student_name)
+    return render_template('cards_show.html', cards=cards, project_name=project_name)
+
+@app.route('/card/<int:cid>/show')
+@login_required
+def card_show(cid):
+    c = Card.query.get(cid)
+    return render_template('card_edit.html', card=c)
 
 @app.route('/card/create', methods=["GET", "POST"])
 @login_required
@@ -237,7 +238,7 @@ def card_create():
         milestones = request.form['milestones'].split('\r\n')
         milestones = [m.strip() for m in milestones if m.strip() != '']
         for s in students:
-            app.logger.debug(f'create card for project "{pname}" and student "{s}"')
+            app.logger.info(f'create card for project "{pname}" and student "{s}"')
             card = Card(project_name=pname, student_name=s)
             for m in milestones:
                 app.logger.debug(f'create milestone "{m}"')
