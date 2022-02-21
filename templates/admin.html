@@ -16,7 +16,9 @@ Administration
         <li> 
             <a href="{{url_for('cards_show', project_name=p)}}"> {{ p }} </a>
             |
-            <a href="{{url_for('admin_cards_hide', project_name=p)}}"> hide </a>            
+            <a href="{{url_for('admin_cards_visibility', project_name=p, visible=0)}}"> hide </a>
+            |
+            <a href="{{url_for('admin_cards_visibility', project_name=p, visible=1)}}"> unhide </a>
         </li>
     {% endfor %}
 </ul>

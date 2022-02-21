@@ -179,17 +179,19 @@ def admin():
         return "Fobidden", 403
 
     cards = Card.query.all()
-    return render_template('admin.html', projects=project_names(),
+    projs = [c.project_name for c in Card.query.group_by(Card.project_name)]
+    return render_template('admin.html', projects=projs,
         cards=cards)
 
-@app.route('/cards/<project_name>/hide')
+@app.route('/cards/<project_name>/visibility/<int:visible>')
 @login_required
-def admin_cards_hide(project_name):
+def admin_cards_visibility(project_name, visible):
     if not current_user.is_admin():
         return "Forbidden", 403
 
+    vis = visible == 1
     for c in Card.query.filter_by(project_name=project_name):
-        c.visibility(False)
+        c.visibility(vis)
 
     return redirect(url_for('admin'))
 
