@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %} 
+Testatkarten - Administration
+{% endblock %}
+
+{% block heading %} 
+Administration
+{% endblock %}
+
+{% block body %}
+
+<h2>Projekte</h2>
+<ul>
+    {% for p in projects %}
+        <li> 
+            <a href="{{url_for('cards_show', project_name=p)}}"> {{ p }} </a>
+            |
+            <a href="{{url_for('admin_cards_hide', project_name=p)}}"> hide </a>            
+        </li>
+    {% endfor %}
+</ul>
+
+<h2>Alle Testatkarten</h2>
+
+<details>
+    <summary>zeigen</summary>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Projekt </th> <th>Student</th> <th>Vollständigkeit</th>
+                <th>Sichtbarkeit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for card in cards %}
+            {% set compl, tot = card.completed_status() %}
+            <tr>
+                <td>{{card.project_name}}
+                </td>
+                <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
+                <td>{{ compl }} / {{ tot }}
+                    {% if compl == tot %}
+                    ☺️
+                    {% endif %}
+                </td>
+                <td>
+                    {% if card.is_visible %}
+                    <a href="{{url_for('admin_card_visibility', cid=card.id, visible=0)}}">hide</a>
+                    {% else %}
+                    <a href="{{url_for('admin_card_visibility', cid=card.id, visible=1)}}">unhide</a>
+                    {% endif %}
+
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</details>
+
+
+{% endblock %}

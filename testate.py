@@ -164,8 +164,16 @@ def logout():
 @app.route('/')
 @login_required
 def index():
+    return render_template('index.html', projects=project_names())
+
+@app.route('/admin')
+@login_required
+def admin():
+    if not current_user.is_admin():
+        return "Fobidden", 403
+
     cards = Card.query.all()
-    return render_template('index.html', projects=project_names(),
+    return render_template('admin.html', projects=project_names(),
         cards=cards)
 
 def project_names():
@@ -187,18 +195,26 @@ def card_show(cid):
     return render_template('card_edit.html', card=c)
 
 @app.route('/cards/hide/<project_name>')
-def cards_hide(project_name):
+@login_required
+def admin_cards_hide(project_name):
+    if not current_user.is_admin():
+        return "Forbidden", 403
+
     for c in Card.query.filter_by(project_name=project_name):
         c.visibility(False)
 
-    return redirect(url_for('index'))
+    return redirect(url_for('admin'))
 
 @app.route('/card/<cid>/visiblity/<visible>')
-def card_visibility(cid, visible):
+@login_required
+def admin_card_visibility(cid, visible):
+    if not current_user.is_admin():
+        return "Forbidden", 403
+        
     c = Card.query.get(cid)
     c.visibility(visible == "1")
 
-    return redirect(url_for('index'))
+    return redirect(url_for('admin'))
 
 @app.route('/card/create', methods=["GET", "POST"])
 @login_required
