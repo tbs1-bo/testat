@@ -125,7 +125,7 @@ def _auth(username, password):
     app.logger.info(f'auth "{username}"')
 
     if DBUser.query.get(username) is None:
-        app.logger.debug(f'"{username}" not found in database')
+        app.logger.warn(f'login: "{username}" not found in database')
         return False
 
     s = smtplib.SMTP(SMTP_AUTHSERVER)
@@ -137,7 +137,7 @@ def _auth(username, password):
         return True
 
     except smtplib.SMTPAuthenticationError:
-        app.logger.debug(f'unable to login at {username}@{SMTP_AUTHSERVER}')
+        app.logger.warn(f'unable to login at {username}@{SMTP_AUTHSERVER}')
         return False
 
 @app.route('/login', methods=["GET", "POST"])
