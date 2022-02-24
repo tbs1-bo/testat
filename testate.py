@@ -197,6 +197,7 @@ def admin_user_add():
     u = DBUser(uid=uid)
     db.session.add(u)
     db.session.commit()
+    app.logger.warn(f'user added: {uid}')
 
     return redirect(url_for('admin'))
 
@@ -208,6 +209,7 @@ def admin_cards_visibility(project_name, visible):
         return "Forbidden", 403
 
     vis = visible == 1
+    app.logger.warn(f'change visibility of all cards in "{project_name}" to {visible}')
     for c in Card.query.filter_by(project_name=project_name):
         c.visibility(vis)
 
@@ -221,6 +223,7 @@ def admin_card_visibility(cid, visible):
         return "Forbidden", 403
         
     c = Card.query.get(cid)
+    app.logger.warn(f'change visibility of card {c} to {visible}')
     c.visibility(visible == "1")
 
     return redirect(url_for('admin'))
