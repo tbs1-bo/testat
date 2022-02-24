@@ -177,6 +177,7 @@ def index():
 @login_required
 def admin():
     if not current_user.is_admin():
+        app.logger.warn(f'admin page not allowed for {current_user}')
         return "Fobidden", 403
 
     cards = Card.query.all()
@@ -189,6 +190,7 @@ def admin():
 @login_required
 def admin_user_add():
     if not current_user.is_admin():
+        app.logger.warn(f'adding user not allowed for {current_user}')
         return "Fobidden", 403
 
     uid = request.form['uid']
@@ -202,6 +204,7 @@ def admin_user_add():
 @login_required
 def admin_cards_visibility(project_name, visible):
     if not current_user.is_admin():
+        app.logger.warn(f'changing card visibility not allowed for {current_user}')
         return "Forbidden", 403
 
     vis = visible == 1
@@ -214,6 +217,7 @@ def admin_cards_visibility(project_name, visible):
 @login_required
 def admin_card_visibility(cid, visible):
     if not current_user.is_admin():
+        app.logger.warn(f'changing card visibility not allowed for {current_user}')
         return "Forbidden", 403
         
     c = Card.query.get(cid)
