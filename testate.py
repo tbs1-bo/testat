@@ -180,9 +180,19 @@ def admin():
         return "Fobidden", 403
 
     cards = Card.query.all()
+    users = DBUser.query.all()
     projs = [c.project_name for c in Card.query.group_by(Card.project_name)]
     return render_template('admin.html', projects=projs,
-        cards=cards)
+        cards=cards, users=users)
+
+@app.post('/admin/user/add')
+def admin_user_add():
+    uid = request.form['uid']
+    u = DBUser(uid=uid)
+    db.session.add(u)
+    db.session.commit()
+
+    return redirect(url_for('admin'))
 
 @app.route('/cards/<project_name>/visibility/<int:visible>')
 @login_required
