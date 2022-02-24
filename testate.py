@@ -180,7 +180,7 @@ def admin():
         return "Fobidden", 403
 
     cards = Card.query.all()
-    users = DBUser.query.all()
+    users = User.all()
     projs = [c.project_name for c in Card.query.group_by(Card.project_name)]
     return render_template('admin.html', projects=projs,
         cards=cards, users=users)

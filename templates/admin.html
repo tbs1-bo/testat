@@ -66,7 +66,9 @@ Administration
 
 <ul>
     {% for user in users %}
-    <li>{{ user.uid }} (Admin? {{user.is_admin}})</li>
+    <li>{{ user.get_id() }} 
+        {% if user.is_admin() %} (Admin) {% endif %}
+        </li>
     {% endfor %}
     <li>
         <form action="{{ url_for('admin_user_add') }}" method="POST">
