@@ -186,7 +186,11 @@ def admin():
         cards=cards, users=users)
 
 @app.post('/admin/user/add')
+@login_required
 def admin_user_add():
+    if not current_user.is_admin():
+        return "Fobidden", 403
+
     uid = request.form['uid']
     u = DBUser(uid=uid)
     db.session.add(u)
