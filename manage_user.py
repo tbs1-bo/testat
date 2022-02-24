@@ -8,7 +8,6 @@ def main():
         return
 
     if sys.argv[1] == 'add':
-        # add
         uid = input('Username? ')
         dbu = testate.DBUser(uid=uid)
         testate.db.session.add(dbu)
