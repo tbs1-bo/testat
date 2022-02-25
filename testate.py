@@ -241,11 +241,11 @@ def card_show(cid):
     c = Card.query.get(cid)
     return render_template('card_edit.html', card=c)
 
-@app.route('/card/create', methods=["GET", "POST"])
+@app.route('/cards/create', methods=["GET", "POST"])
 @login_required
-def card_create():
+def cards_create():
     if request.method == "GET":
-        return render_template('card_create.html')
+        return render_template('cards_create.html')
 
     elif request.method == "POST":
         pname = request.form['project_name']
@@ -255,7 +255,7 @@ def card_create():
 
         if pname in project_names():
             flash(f'Projektname "{pname}" doppelt')
-            return redirect(url_for('card_create'))
+            return redirect(url_for('cards_create'))
 
         students = request.form['student_names'].split('\r\n')
         students = [s.strip() for s in students if s.strip() != '']
