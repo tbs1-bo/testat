@@ -97,6 +97,18 @@ class Card(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def clean_copy(self, pname, sname):
+        'create a copy using the given project- and student names including clean milestones'
+        copy = Card(project_name=pname, student_name=sname)
+        for m in self.milestones:
+            m = Milestone(description=m.description)
+            copy.milestones.append(m)
+
+        return copy
+
+    def __repr__(self):
+        return f'Card(id={self.id}, project_name={self.project_name}, student_name={self.student_name})'
+
     @classmethod
     def all_visible(cls):
         return cls.query.filter_by(is_visible=True)
@@ -240,6 +252,20 @@ def cards_show(project_name):
 def card_show(cid):
     c = Card.query.get(cid)
     return render_template('card_edit.html', card=c)
+
+@app.post('/card/create/<project_name>')
+@login_required
+def card_create(project_name):
+    c1:Card = Card.query.filter_by(project_name=project_name).first()
+    student_name = request.form['student_name']
+    c = c1.clean_copy(pname=project_name, sname=student_name)
+    
+    db.session.add(c)
+    db.session.commit()
+    app.logger.info(f'added new card "{c}"')
+
+    return redirect(url_for('cards_show', project_name=project_name))
+
 
 @app.route('/cards/create', methods=["GET", "POST"])
 @login_required
