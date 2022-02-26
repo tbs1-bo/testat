@@ -21,8 +21,14 @@ Meilenstein 2</textarea>
     <textarea name="student_names">
 Max Muster
 Moni Muster</textarea>
-            <input type="submit" value="erstellen">
+    Nutzer mit Zugriff:
+    {% for user in users %}
+        <input type="checkbox" name="users" value="{{ user.uid }}" 
+            {% if current_user.dbu == user %}            
+            checked
+            {% endif %}> {{ user.uid }}
+    {% endfor %}
+    <input type="submit" value="erstellen">
 </form>
 
 {% endblock %}
-

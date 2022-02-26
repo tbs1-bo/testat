@@ -287,6 +287,7 @@ def card_create(project_name):
     c1:Card = Card.query.filter_by(project_name=project_name).first()
     student_name = request.form['student_name']
     c = c1.clean_copy(pname=project_name, sname=student_name)
+    # TODO maybe make this card visible to other users
     current_user.dbu.cards.append(c)
     
     db.session.add(current_user.dbu)
@@ -300,8 +301,8 @@ def card_create(project_name):
 @login_required
 def cards_create():
     if request.method == "GET":
-        # TODO allow being visible to multiple users
-        return render_template('cards_create.html')
+        users = DBUser.query.all()
+        return render_template('cards_create.html', users=users)
 
     elif request.method == "POST":
         pname = request.form['project_name']
@@ -317,15 +318,20 @@ def cards_create():
         students = [s.strip() for s in students if s.strip() != '']
         milestones = request.form['milestones'].split('\r\n')
         milestones = [m.strip() for m in milestones if m.strip() != '']
+        users = request.form.getlist('users')
         for s in students:
             app.logger.info(f'create card for project "{pname}" and student "{s}"')
             card = Card(project_name=pname, student_name=s)
-            # TODO link card to all users referenced by the request
-            current_user.dbu.cards.append(card)
+            # link card to all users referenced by the request
+            for user in users:
+                app.logger.info(f'adding card to user {user}')
+                u = DBUser.query.get(user)
+                u.cards.append(card)
+                db.session.add(u)
             for m in milestones:
                 app.logger.debug(f'create milestone "{m}"')
                 card.milestones.append(Milestone(description=m))
-            db.session.add(current_user.dbu)
+
         db.session.commit()
 
         flash(f'Testatkarten für Projekt "{pname}" erstellt')
