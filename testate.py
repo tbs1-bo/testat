@@ -6,6 +6,7 @@ from flask_login import LoginManager, UserMixin, login_required, \
     login_user, logout_user, current_user
 import smtplib
 import config
+import git
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -209,9 +210,11 @@ def admin():
 
     cards = Card.query.all()
     users = User.all()
+    repo = git.Repo(search_parent_directories=True)
+    head_obj = repo.head.object
     projs = [c.project_name for c in Card.query.group_by(Card.project_name)]
     return render_template('admin.html', projects=projs,
-        cards=cards, users=users)
+        cards=cards, users=users, git_head=head_obj)
 
 @app.post('/admin/user/add')
 @login_required
