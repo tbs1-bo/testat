@@ -8,8 +8,9 @@ def main():
         return
 
     if sys.argv[1] == 'ls':
+        print('project name \t| #milestones \t| visible')
         for card in Card.query.group_by(Card.project_name):
-            print(f'{card.project_name} ({len(card.milestones)}) visible={card.is_visible}')
+            print(f'{card.project_name} \t| {len(card.milestones)} \t| {card.is_visible}')
         
     elif sys.argv[1] == 'rm':
         pname = input('Projekt? ')
