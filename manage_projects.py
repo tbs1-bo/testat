@@ -14,7 +14,7 @@ def main():
     elif sys.argv[1] == 'rm':
         pname = input('Projekt? ')
         for card in Card.query.filter(Card.project_name == pname):
-            print(f'delete card of {card.student_name}')
+            print(f'delete card {card.id} of {card.student_name}')
             card.delete()
 
     elif sys.argv[1] == 'hide':
