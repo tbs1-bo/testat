@@ -59,6 +59,11 @@ class User(UserMixin):
     def is_admin(self):
         return self.dbu.is_admin
 
+    def project_names(self):
+        cards = self.dbu.visible_cards()
+        projs = set(c.project_name for c in cards)
+        return projs
+
     @classmethod
     def all(cls):
         return [User(dbu.uid) for dbu in DBUser.query.all()]
@@ -124,8 +129,8 @@ class Card(db.Model):
     def all_visible(cls):
         return cls.query.filter_by(is_visible=True)
 
-def project_names():
-    cards = current_user.dbu.visible_cards()
+def all_project_names():
+    cards = Card.all_visible()
     projs = set(c.project_name for c in cards)
     return projs
 
@@ -193,7 +198,7 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html', projects=project_names())
+    return render_template('index.html', projects=current_user.project_names())
 
 @app.route('/admin')
 @login_required
@@ -291,7 +296,7 @@ def cards_create():
             flash('Projektname darf nicht leer sein')
             return redirect(url_for('card_create'))
 
-        if pname in project_names():
+        if pname in all_project_names():
             flash(f'Projektname "{pname}" doppelt')
             return redirect(url_for('cards_create'))
 
