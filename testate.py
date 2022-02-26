@@ -66,10 +66,21 @@ class User(UserMixin):
     def __repr__(self):
         return f'User(uid={self.get_id()})'
 
+# Many-to-many relationship between database users and cards
+# https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/#many-to-many-relationships
+cards = db.Table('dbuser_card',
+    db.Column('dbuser_uid', db.String(80), db.ForeignKey('db_user.uid'), primary_key=True),
+    db.Column('card_id', db.Integer, db.ForeignKey('card.id'), primary_key=True)
+)
+
 class DBUser(db.Model):
     uid = db.Column(db.String(80), primary_key=True)
     is_admin = db.Column(db.Boolean, default=False)
+    cards = db.relationship('Card', secondary=cards, lazy='subquery',
+        backref=db.backref('users', lazy=True))
 
+    def visible_cards(self):
+        return [c for c in self.cards if c.is_visible]
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -114,10 +125,9 @@ class Card(db.Model):
         return cls.query.filter_by(is_visible=True)
 
 def project_names():
-    projs = [p.project_name for p in Card.all_visible().group_by(
-        Card.project_name)]
+    cards = current_user.dbu.visible_cards()
+    projs = set(c.project_name for c in cards)
     return projs
-
 
 class Milestone(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -243,8 +253,8 @@ def admin_card_visibility(cid, visible):
 @app.route('/cards/show/<project_name>')
 @login_required
 def cards_show(project_name):
-    cards = Card.all_visible().filter_by(
-        project_name=project_name).order_by(Card.student_name)
+    cards = [c for c in current_user.dbu.visible_cards() if c.project_name==project_name]
+    cards.sort(key=lambda c:c.student_name)
     return render_template('cards_show.html', cards=cards, project_name=project_name)
 
 @app.route('/card/<int:cid>/show')
@@ -259,8 +269,9 @@ def card_create(project_name):
     c1:Card = Card.query.filter_by(project_name=project_name).first()
     student_name = request.form['student_name']
     c = c1.clean_copy(pname=project_name, sname=student_name)
+    current_user.dbu.cards.append(c)
     
-    db.session.add(c)
+    db.session.add(current_user.dbu)
     db.session.commit()
     app.logger.info(f'added new card "{c}"')
 
@@ -271,6 +282,7 @@ def card_create(project_name):
 @login_required
 def cards_create():
     if request.method == "GET":
+        # TODO allow being visible to multiple users
         return render_template('cards_create.html')
 
     elif request.method == "POST":
@@ -290,10 +302,12 @@ def cards_create():
         for s in students:
             app.logger.info(f'create card for project "{pname}" and student "{s}"')
             card = Card(project_name=pname, student_name=s)
+            # TODO link card to all users referenced by the request
+            current_user.dbu.cards.append(card)
             for m in milestones:
                 app.logger.debug(f'create milestone "{m}"')
                 card.milestones.append(Milestone(description=m))
-            db.session.add(card)
+            db.session.add(current_user.dbu)
         db.session.commit()
 
         flash(f'Testatkarten für Projekt "{pname}" erstellt')
