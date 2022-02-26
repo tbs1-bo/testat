@@ -7,6 +7,11 @@ from flask_login import LoginManager, UserMixin, login_required, \
 import smtplib
 import config
 import git
+import locale
+from functools import cmp_to_key
+
+# change locale to support german sorting order respecting umlauts
+locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -262,7 +267,12 @@ def admin_card_visibility(cid, visible):
 @login_required
 def cards_show(project_name):
     cards = [c for c in current_user.dbu.visible_cards() if c.project_name==project_name]
-    cards.sort(key=lambda c:c.student_name)
+
+    # cmp_to_key converts old-style cmp-function to new key-function.
+    # using strcoll to allow locale aware sorting
+    # https://docs.python.org/3/library/functools.html#functools.cmp_to_key
+    cards.sort(key=lambda c:cmp_to_key(locale.strcoll)(c.student_name))
+
     return render_template('cards_show.html', cards=cards, project_name=project_name)
 
 @app.route('/card/<int:cid>/show')
