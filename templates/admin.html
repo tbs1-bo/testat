@@ -32,7 +32,7 @@ Administration
         <thead>
             <tr>
                 <th>Projekt </th> <th>Student</th> <th>Vollständigkeit</th>
-                <th>Sichtbarkeit</th>
+                <th>Sichtbarkeit</th> <th>Zugriff</th>
             </tr>
         </thead>
         <tbody>
@@ -53,7 +53,13 @@ Administration
                     {% else %}
                     <a href="{{url_for('admin_card_visibility', cid=card.id, visible=1)}}">unhide</a>
                     {% endif %}
-
+                </td>
+                <td>
+                    <span title="{{ card.users }}">
+                    {% for user in card.users %}
+                        {{ user.uid[:3] }}
+                    {% endfor %}
+                    </span>
                 </td>
             </tr>
         {% endfor %}
