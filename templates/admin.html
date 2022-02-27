@@ -31,6 +31,7 @@ Administration
     <table>
         <thead>
             <tr>
+                <th>id</th>
                 <th>Projekt </th> <th>Student</th> <th>Vollständigkeit</th>
                 <th>Sichtbarkeit</th> <th>Zugriff</th>
             </tr>
@@ -39,6 +40,7 @@ Administration
             {% for card in cards %}
             {% set compl, tot = card.completed_status() %}
             <tr>
+                <td>{{ card.id }}</td>
                 <td>{{card.project_name}}
                 </td>
                 <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
