@@ -70,11 +70,13 @@ Administration
             {{ user.get_id() }} 
             {% if user.is_admin() %} (Admin) {% endif %}
             ({{ user.dbu.cards|length }})</span>
-        </summary>        
-        Cards: <br>
-        {% for card in user.dbu.cards %}
-            {{ card }}<br>
-        {% endfor %}
+        </summary>       
+        <p>
+            Cards: <br>
+            {% for card in user.dbu.cards %}
+                {{ card }}<br>
+            {% endfor %}
+        </p> 
     </details> 
 
 {% endfor %}
