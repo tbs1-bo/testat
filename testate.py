@@ -266,9 +266,7 @@ def admin_card_visibility(cid, visible):
 @app.route('/cards/show/<project_name>')
 @login_required
 def cards_show(project_name):
-    order_by = 'student_name'
-    if 'order_by' in request.args:
-        order_by = request.args['order_by']
+    order_by = request.args.get('order_by', 'student_name')
 
     cards = [c for c in current_user.dbu.visible_cards() if c.project_name==project_name]
 
