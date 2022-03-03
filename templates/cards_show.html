@@ -13,7 +13,15 @@ Testatkarten "{{ project_name }}"
 <table>
     <thead>
         <tr>
-            <th>Student</th> <th>Vollständigkeit (Mittel: {{ avg_completion|round(2) }})</th>
+            <th><a href="{{ url_for('cards_show', project_name=project_name, order_by='student_name') }}">
+                Student
+                </a>
+            </th> 
+            <th><a href="{{ url_for('cards_show', project_name=project_name, order_by='completion') }}">
+                Vollständigkeit
+                </a> 
+                (Mittel: {{ avg_completion|round(2) }})                
+            </th>
         </tr>
     </thead>
     <tbody>

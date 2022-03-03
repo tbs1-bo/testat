@@ -266,6 +266,10 @@ def admin_card_visibility(cid, visible):
 @app.route('/cards/show/<project_name>')
 @login_required
 def cards_show(project_name):
+    order_by = 'student_name'
+    if 'order_by' in request.args:
+        order_by = request.args['order_by']
+
     cards = [c for c in current_user.dbu.visible_cards() if c.project_name==project_name]
 
     completed_ms, total_ms = 0, 0
@@ -279,10 +283,13 @@ def cards_show(project_name):
     else:
         avg_completion = completed_ms / total_ms * len(cards[0].milestones)
 
-    # cmp_to_key converts old-style cmp-function to new key-function.
-    # using strcoll to allow locale aware sorting
-    # https://docs.python.org/3/library/functools.html#functools.cmp_to_key
-    cards.sort(key=lambda c:cmp_to_key(locale.strcoll)(c.student_name))
+    if order_by == 'completion':
+        cards.sort(key=lambda c:c.completed_status()[0], reverse=True)
+    else:
+        # cmp_to_key converts old-style cmp-function to new key-function.
+        # using strcoll to allow locale aware sorting
+        # https://docs.python.org/3/library/functools.html#functools.cmp_to_key        
+        cards.sort(key=lambda c:cmp_to_key(locale.strcoll)(c.student_name))
 
     return render_template('cards_show.html', cards=cards, project_name=project_name,
         avg_completion = avg_completion)
