@@ -204,7 +204,8 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html', projects=current_user.project_names())
+    projs = sorted(current_user.project_names())
+    return render_template('index.html', projects=projs)
 
 @app.route('/admin')
 @login_required
