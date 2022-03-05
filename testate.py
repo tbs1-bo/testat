@@ -1,14 +1,16 @@
-from datetime import datetime
 from flask import Flask, render_template, redirect, request, \
-    flash, url_for
+    flash, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_required, \
     login_user, logout_user, current_user
+from openpyxl import Workbook
+from datetime import datetime
 import smtplib
 import config
 import git
 import locale
 from functools import cmp_to_key
+import tempfile
 
 # change locale to support german sorting order respecting umlauts
 locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
@@ -292,6 +294,28 @@ def cards_show(project_name):
 
     return render_template('cards_show.html', cards=cards, project_name=project_name,
         avg_completion = avg_completion)
+
+@app.route('/cards/export/<project_name>')
+@login_required
+def cards_export(project_name):
+    cards = [c for c in current_user.dbu.visible_cards() if c.project_name==project_name]
+
+    wb = Workbook()
+    sheet = wb.active
+    sheet.title = project_name
+    row = ['card.id', 'project_name', 'student_name', 'is_visible',
+        'milestone.id', 'milestone.description', 'milestone.finished', 'milestone.signed_by']
+    sheet.append(row)
+
+    for c in cards:
+        row = [c.id, c.project_name, c.student_name, c.is_visible]
+        for m in c.milestones:
+            row_ms = [m.id, m.description, m.finished, m.signed_by]
+            sheet.append(row + row_ms)
+
+    _filehandle, dest_filename = tempfile.mkstemp('.xlsx', 'testat_export_')  
+    wb.save(dest_filename)
+    return send_file(dest_filename)
 
 @app.route('/card/<int:cid>/show')
 @login_required
