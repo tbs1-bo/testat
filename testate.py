@@ -128,6 +128,10 @@ class Card(db.Model):
             m = Milestone(description=m.description)
             copy.milestones.append(m)
 
+        # copy users of the card
+        for u in self.users:
+            copy.users.append(u)
+
         return copy
 
     def __repr__(self):
@@ -329,10 +333,8 @@ def card_create(project_name):
     c1:Card = Card.query.filter_by(project_name=project_name).first()
     student_name = request.form['student_name']
     c = c1.clean_copy(pname=project_name, sname=student_name)
-    # TODO maybe make this card visible to other users
-    current_user.dbu.cards.append(c)
     
-    db.session.add(current_user.dbu)
+    db.session.add(c)
     db.session.commit()
     app.logger.info(f'added new card "{c}"')
 
