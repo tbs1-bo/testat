@@ -317,6 +317,12 @@ def cards_export(project_name):
             row_ms = [m.id, m.description, m.finished, m.signed_by]
             sheet.append(row + row_ms)
 
+    sheet = wb.create_sheet('Übersicht')
+    sheet.append(["Name", "Vollständigkeit"])
+    for c in cards:
+        completed, _total = c.completed_status()
+        sheet.append([c.student_name, completed])
+
     _filehandle, dest_filename = tempfile.mkstemp('.xlsx', 'testat_export_')  
     wb.save(dest_filename)
     return send_file(dest_filename)
