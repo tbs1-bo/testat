@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_required, \
     login_user, logout_user, current_user
 from openpyxl import Workbook
+import openpyxl.comments
 from datetime import datetime
 import smtplib
 import config
@@ -343,7 +344,10 @@ def cards_export(project_name):
             sheet.append(row + row_ms)
 
     sheet = wb.create_sheet('Übersicht')
-    sheet.append(["Name", "Vollständigkeit", "Punkte"])
+    sheet.append(["Name", "Vollständigkeit", "Punkte"])    
+    sheet['C1'].comment = openpyxl.comments.Comment("Punktzahl ermittelt aus " +\
+        f"Basispunktzahl {config.BASE_SCORE} pro Meilenstein und vermindert " +\
+        "um 1 für jeden anderen früher abgeschlossenen Meilenstein.", "Exporter")
     app.logger.debug(f'compute card score with base score {config.BASE_SCORE}')
     cardpoints = _calc_card_points(cards, config.BASE_SCORE)
     for c in cards:
