@@ -1,3 +1,4 @@
+from collections import defaultdict
 from flask import Flask, render_template, redirect, request, \
     flash, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
@@ -299,6 +300,29 @@ def cards_show(project_name):
     return render_template('cards_show.html', cards=cards, project_name=project_name,
         avg_completion = avg_completion)
 
+def _calc_card_points(cards:list[Card], base_score) -> dict[Card, int]:
+    'Compute point for each card'
+    points:dict[Card, int] = defaultdict(int)
+    milestones: dict[str, list[Milestone]] = defaultdict(list)
+    # grouping cards by description
+    for c in cards:
+        compl = [ms for ms in c.milestones if ms.is_completed()]
+        for ms in compl:
+            milestones[ms.description].append(ms)
+    
+    # points based on base score
+    for _, mss in milestones.items():
+        # sort by completion date
+        mss.sort(key=lambda ms:ms.finished)
+
+        # compute points - earlier milestones worth more point
+        score = base_score
+        for ms in mss:
+            points[ms.card] += score
+            score -= 1
+
+    return points
+
 @app.route('/cards/export/<project_name>')
 @login_required
 def cards_export(project_name):
@@ -318,10 +342,13 @@ def cards_export(project_name):
             sheet.append(row + row_ms)
 
     sheet = wb.create_sheet('Übersicht')
-    sheet.append(["Name", "Vollständigkeit"])
+    sheet.append(["Name", "Vollständigkeit", "Punkte"])
+    app.logger.debug(f'compute card score with base score {config.BASE_SCORE}')
+    cardpoints = _calc_card_points(cards, config.BASE_SCORE)
     for c in cards:
         completed, _total = c.completed_status()
-        sheet.append([c.student_name, completed])
+        sheet.append([
+            c.student_name, completed, cardpoints[c]])
 
     _filehandle, dest_filename = tempfile.mkstemp('.xlsx', 'testat_export_')  
     wb.save(dest_filename)
