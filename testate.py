@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import List, Dict
 from flask import Flask, render_template, redirect, request, \
     flash, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
@@ -300,10 +301,10 @@ def cards_show(project_name):
     return render_template('cards_show.html', cards=cards, project_name=project_name,
         avg_completion = avg_completion)
 
-def _calc_card_points(cards:list[Card], base_score) -> dict[Card, int]:
+def _calc_card_points(cards:List[Card], base_score) -> Dict[Card, int]:
     'Compute point for each card'
     points:dict[Card, int] = defaultdict(int)
-    milestones: dict[str, list[Milestone]] = defaultdict(list)
+    milestones: Dict[str, List[Milestone]] = defaultdict(list)
     # grouping cards by description
     for c in cards:
         compl = [ms for ms in c.milestones if ms.is_completed()]
