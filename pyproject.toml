@@ -9,8 +9,10 @@ python = "^3.7"
 Flask = "^2.0.2"
 gunicorn = "^20.1.0"
 Flask-SQLAlchemy = "^2.5.1"
-python-dotenv = "^0.19.2"
-Flask-Login = "^0.5.0"
+# https://github.com/theskumar/python-dotenv/blob/master/CHANGELOG.md
+python-dotenv = "^0.20.0"
+# https://github.com/maxcountryman/flask-login/blob/main/CHANGES.md
+Flask-Login = "^0.6.0"
 GitPython = "^3.1.27"
 openpyxl = "^3.0.9"
 
