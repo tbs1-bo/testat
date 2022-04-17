@@ -6,14 +6,19 @@ authors = ["Marco Bakera <marco@bakera.de>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+# https://flask.palletsprojects.com/en/2.1.x/changes/
 Flask = "^2.0.2"
+# https://docs.gunicorn.org/en/stable/news.html
 gunicorn = "^20.1.0"
+# https://flask-sqlalchemy.palletsprojects.com/en/2.x/changelog/
 Flask-SQLAlchemy = "^2.5.1"
 # https://github.com/theskumar/python-dotenv/blob/master/CHANGELOG.md
 python-dotenv = "^0.20.0"
 # https://github.com/maxcountryman/flask-login/blob/main/CHANGES.md
 Flask-Login = "^0.6.0"
+# https://gitpython.readthedocs.io/en/stable/changes.html
 GitPython = "^3.1.27"
+# https://openpyxl.readthedocs.io/en/stable/changes.html
 openpyxl = "^3.0.9"
 
 [tool.poetry.dev-dependencies]
