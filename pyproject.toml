@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "testate"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = ["Marco Bakera <marco@bakera.de>"]
 
