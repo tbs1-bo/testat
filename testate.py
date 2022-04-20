@@ -302,9 +302,9 @@ def cards_show(project_name):
     return render_template('cards_show.html', cards=cards, project_name=project_name,
         avg_completion = avg_completion)
 
-def _calc_card_points(cards:List[Card], base_score) -> Dict[Card, int]:
-    'Compute point for each card'
-    points:dict[Card, int] = defaultdict(int)
+def _calc_milestone_points(cards:List[Card], base_score) -> Dict[Milestone, int]:
+    'Compute point for each card and return a dict mapping milestones to points.'
+    points:Dict[Milestone, int] = defaultdict(int)
     milestones: Dict[str, List[Milestone]] = defaultdict(list)
     # grouping cards by description
     for c in cards:
@@ -320,7 +320,7 @@ def _calc_card_points(cards:List[Card], base_score) -> Dict[Card, int]:
         # compute points - earlier milestones worth more point
         score = base_score
         for ms in mss:
-            points[ms.card] += score
+            points[ms] = score
             score -= 1
 
     return points
@@ -334,26 +334,27 @@ def cards_export(project_name):
     sheet = wb.active
     sheet.title = project_name
     row = ['card.id', 'project_name', 'student_name', 'is_visible',
-        'milestone.id', 'milestone.description', 'milestone.finished', 'milestone.signed_by']
+        'milestone.id', 'milestone.description', 'milestone.finished', 
+        'milestone.signed_by', 'points']
     sheet.append(row)
 
+    mspoints = _calc_milestone_points(cards, config.BASE_SCORE)
     for c in cards:
         row = [c.id, c.project_name, c.student_name, c.is_visible]
         for m in c.milestones:
-            row_ms = [m.id, m.description, m.finished, m.signed_by]
+            row_ms = [m.id, m.description, m.finished, m.signed_by, mspoints[m]]
             sheet.append(row + row_ms)
 
     sheet = wb.create_sheet('Übersicht')
-    sheet.append(["Name", "Vollständigkeit", "Punkte"])    
+    sheet.append(["Name", "Vollständigkeit", "Punkte"])
     sheet['C1'].comment = openpyxl.comments.Comment("Punktzahl ermittelt aus " +\
         f"Basispunktzahl {config.BASE_SCORE} pro Meilenstein und vermindert " +\
         "um 1 für jeden anderen früher abgeschlossenen Meilenstein.", "Exporter")
     app.logger.debug(f'compute card score with base score {config.BASE_SCORE}')
-    cardpoints = _calc_card_points(cards, config.BASE_SCORE)
     for c in cards:
         completed, _total = c.completed_status()
-        sheet.append([
-            c.student_name, completed, cardpoints[c]])
+        cardpoints = sum(mspoints[ms] for ms in mspoints if ms.card==c)
+        sheet.append([c.student_name, completed, cardpoints])
 
     _filehandle, dest_filename = tempfile.mkstemp('.xlsx', 'testat_export_')  
     wb.save(dest_filename)
