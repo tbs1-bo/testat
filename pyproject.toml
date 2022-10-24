@@ -13,7 +13,7 @@ gunicorn = "^20.1.0"
 # https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/changes/
 Flask-SQLAlchemy = "^3.0.0"
 # https://github.com/theskumar/python-dotenv/blob/master/CHANGELOG.md
-python-dotenv = "^0.20.0"
+python-dotenv = "^0.21.0"
 # https://github.com/maxcountryman/flask-login/blob/main/CHANGES.md
 Flask-Login = "^0.6.0"
 # https://gitpython.readthedocs.io/en/stable/changes.html
