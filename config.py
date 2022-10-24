@@ -5,7 +5,6 @@
 SECRET_KEY = 'change this'
 
 FLASK_APP = 'testate'
-FLASK_ENV = 'development'
 
 # Domain of the app - can be empty. Should be used in contexts of running the 
 # app behind a proxy. In this case place the hostname of main server in this

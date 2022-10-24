@@ -15,8 +15,8 @@
                 "TESTAT_CONF": "config.local.py"
             },
             "args": [
+                "--debug",
                 "run",
-                // "--no-debugger"
             ],
             "jinja": true
         }
