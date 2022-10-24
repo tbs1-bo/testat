@@ -11,7 +11,7 @@ Flask = "^2.2.2"
 # https://docs.gunicorn.org/en/stable/news.html
 gunicorn = "^20.1.0"
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/changelog/
-Flask-SQLAlchemy = "^2.5.1"
+Flask-SQLAlchemy = "^3.0.0"
 # https://github.com/theskumar/python-dotenv/blob/master/CHANGELOG.md
 python-dotenv = "^0.20.0"
 # https://github.com/maxcountryman/flask-login/blob/main/CHANGES.md
