@@ -1,4 +1,3 @@
-from cgi import test
 from testate import Card
 import sys
 
