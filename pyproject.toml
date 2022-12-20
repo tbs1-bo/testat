@@ -5,7 +5,7 @@ description = ""
 authors = ["Marco Bakera <marco@bakera.de>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.7.3"
 # https://flask.palletsprojects.com/en/2.2.x/changes/
 Flask = "^2.2.2"
 # https://docs.gunicorn.org/en/stable/news.html
@@ -22,7 +22,7 @@ GitPython = "^3.1.27"
 openpyxl = "^3.0.9"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.12.2"
+pylint = "^2.15.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
