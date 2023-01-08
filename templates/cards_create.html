@@ -12,8 +12,8 @@ Projekt erstellen
 
 <form action="{{url_for('cards_create')}}" method="POST">
     <input name="project_name" placeholder="Projektname" required
-        title="Projektname (kein / im Titel)"
-        pattern="[^/]+">
+        title="Projektname (kein / oder : im Titel)"
+        pattern="[^/:]+">
     Meilensteine (ein Meilenstein pro Zeile)
     <textarea name="milestones">
 Meilenstein 1
