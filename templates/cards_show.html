@@ -54,6 +54,20 @@ Testatkarten "{{ project_name }}"
 </div>
 
 <details>
+    <summary>Letzte Meilensteine
+    </summary>
+    <ul>
+        {% for ms in last_completed_milestones %}
+        <li>
+            {{ms.card.student_name}}:
+            {{ms.description|truncate(50)}}
+            ({{ms.finished.strftime("%Y-%m-%d")}})
+        </li>
+        {% endfor %}
+    </ul>
+</details>
+
+<details>
 <summary>Schüler, Schülerin hinzufügen
 </summary>
     <form action="{{ url_for('card_create', project_name=project_name) }}" method="POST">

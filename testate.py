@@ -106,8 +106,11 @@ class Card(db.Model):
 
     def completed_status(self):
         'Return number of completed and number of milestones'
-        compl = [m for m in self.milestones if m.is_completed()]
+        compl = self.completed_milestones()
         return len(compl), len(self.milestones)
+
+    def completed_milestones(self):
+        return [m for m in self.milestones if m.is_completed()]
 
     def delete(self):
         'delete card and its milestones'
@@ -299,8 +302,15 @@ def cards_show(project_name):
         # https://docs.python.org/3/library/functools.html#functools.cmp_to_key        
         cards.sort(key=lambda c:cmp_to_key(locale.strcoll)(c.student_name))
 
+    completed_milestones = []
+    for c in cards:
+        completed_milestones.extend(c.completed_milestones())
+    completed_milestones.sort(key=lambda m: m.finished, reverse=True)
+
+    last_n_ms = 10 # show last n signed milestones
     return render_template('cards_show.html', cards=cards, project_name=project_name,
-        avg_completion = avg_completion)
+        avg_completion = avg_completion, 
+        last_completed_milestones=completed_milestones[:last_n_ms])
 
 def _calc_milestone_points(cards:List[Card], base_score) -> Dict[Milestone, int]:
     'Compute point for each card and return a dict mapping milestones to points.'
