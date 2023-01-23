@@ -1,4 +1,3 @@
-from cgi import test
 import testate
 import sys
 
