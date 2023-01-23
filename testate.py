@@ -342,7 +342,7 @@ def cards_export(project_name):
 
     wb = Workbook()
     sheet = wb.active
-    sheet.title = project_name
+    sheet.title = "Testate"
     row = ['card.id', 'project_name', 'student_name', 'is_visible',
         'milestone.id', 'milestone.description', 'milestone.finished', 
         'milestone.signed_by', 'points']
