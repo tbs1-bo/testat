@@ -59,7 +59,7 @@ Testatkarten "{{ project_name }}"
     <ul>
         {% for ms in last_completed_milestones %}
         <li>
-            {{ms.card.student_name}}:
+            <a href="{{url_for('card_show', cid=ms.card.id)}}">{{ ms.card.student_name }}</a>:
             {{ms.description|truncate(50)}}
             ({{ms.finished.strftime("%Y-%m-%d")}})
         </li>
