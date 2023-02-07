@@ -1,4 +1,4 @@
-from testate import Card, app
+from testate import Card, app, DBUser, db
 import sys
 
 def run(cmd):
@@ -25,12 +25,27 @@ def run(cmd):
             print(f'unhiding card of {card.student_name}')
             card.visibility(True)
 
+    elif cmd == 'add_teacher':
+        username = input('User? ')
+        user = DBUser.query.get(username)
+        if not user:
+            print("User not found")
+            return
+
+        pname = input('Projekt? ')
+
+        for card in Card.query.filter(Card.project_name == pname):
+            print("Adding card", card)
+            user.cards.append(card)
+
+        db.session.commit()
+
     else:
         print(f'unsupported command')
 
 def main():
     if len(sys.argv) != 2:
-        print("ls, rm, hide or show?")
+        print("ls, rm, add_teacher, hide or show?")
         return
 
     with app.app_context():
