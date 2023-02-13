@@ -389,21 +389,6 @@ def card_create(project_name):
 
     return redirect(url_for('cards_show', project_name=project_name))
 
-@app.post('/milestone/create')
-@login_required
-def milestone_add():
-    pname = request.form['project_name']
-    ms_desc = request.form['milestone_description']
-
-    app.logger.info(f"adding milestone {ms_desc} to project {pname}")
-    cards = Card.query.filter_by(project_name=pname)
-    for card in cards:
-        card.milestones.append(Milestone(description=ms_desc))
-
-    db.session.commit()
-
-    return redirect(url_for('cards_show', project_name=pname))
-
 @app.route('/cards/create', methods=["GET", "POST"])
 @login_required
 def cards_create():
@@ -443,6 +428,21 @@ def cards_create():
 
         flash(f'Testatkarten für Projekt "{pname}" erstellt')
         return redirect(url_for('index'))
+
+@app.post('/milestone/create')
+@login_required
+def milestone_add():
+    pname = request.form['project_name']
+    ms_desc = request.form['milestone_description']
+
+    app.logger.info(f"adding milestone {ms_desc} to project {pname}")
+    cards = Card.query.filter_by(project_name=pname)
+    for card in cards:
+        card.milestones.append(Milestone(description=ms_desc))
+
+    db.session.commit()
+
+    return redirect(url_for('cards_show', project_name=pname))
 
 @app.route('/milestone/<int:mid>/sign')
 @login_required
