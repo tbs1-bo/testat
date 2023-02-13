@@ -68,6 +68,17 @@ Testatkarten "{{ project_name }}"
 </details>
 
 <details>
+    <summary>Meilenstein hinzufügen
+    </summary>
+        <form action="{{ url_for('milestone_add') }}" method="POST">
+            <input name="milestone_description" placeholder="Neuer Meilenstein" required>
+            <input type="hidden" name="project_name" value="{{project_name}}">
+            <input type="submit" value="Hinzufügen">
+        </form>
+    </details>
+    
+
+<details>
 <summary>Schüler, Schülerin hinzufügen
 </summary>
     <form action="{{ url_for('card_create', project_name=project_name) }}" method="POST">
