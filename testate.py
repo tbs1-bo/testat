@@ -429,6 +429,26 @@ def cards_create():
         flash(f'Testatkarten für Projekt "{pname}" erstellt')
         return redirect(url_for('index'))
 
+@app.post('/card/user/add')
+@login_required
+def card_user_add():
+    pname = request.form['project_name']
+    username = request.form['username']
+
+    user = DBUser.query.get(username)
+    if not user:
+        flash(f'Nutzer nicht gefunden {username}')
+        return redirect(url_for('cards_show', project_name=pname))
+
+    app.logger.info(f"adding user {username} to project {pname}")
+    for card in Card.query.filter(Card.project_name == pname):
+        user.cards.append(card)
+
+    db.session.commit()
+
+    return redirect(url_for('cards_show', project_name=pname))
+
+
 @app.post('/milestone/create')
 @login_required
 def milestone_add():
@@ -443,6 +463,7 @@ def milestone_add():
     db.session.commit()
 
     return redirect(url_for('cards_show', project_name=pname))
+
 
 @app.route('/milestone/<int:mid>/sign')
 @login_required

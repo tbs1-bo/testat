@@ -87,4 +87,14 @@ Testatkarten "{{ project_name }}"
     </form>
 </details>
 
+<details>
+    <summary>Lehrer, Lehrerin hinzufügen
+    </summary>
+    <form action="{{ url_for('card_user_add') }}" method="POST">
+        <input name="username" placeholder="Lehrer" required>
+        <input type="hidden" name="project_name" value="{{project_name}}">
+        <input type="submit" value="Hinzufügen">
+    </form>
+</details>
+
 {% endblock %}
