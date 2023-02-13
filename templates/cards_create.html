@@ -32,7 +32,7 @@ Moni Muster</textarea>
             <input type="checkbox" name="users" value="{{ user.uid }}" 
                 {% if current_user.dbu == user %}            
                 checked
-                {% endif %}> {{ user.uid }}
+                {% endif %}> {{ user.uid }} <br>
         {% endfor %}
         </p>
     </details>
