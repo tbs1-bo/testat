@@ -22,3 +22,6 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # base score for computing score of cards
 BASE_SCORE = 50
+
+# show this many completed milestones in card overview
+SHOWN_N_LAST_MILESTONES = 10

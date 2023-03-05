@@ -307,7 +307,7 @@ def cards_show(project_name):
         completed_milestones.extend(c.completed_milestones())
     completed_milestones.sort(key=lambda m: m.finished, reverse=True)
 
-    last_n_ms = 10 # show last n signed milestones
+    last_n_ms = config.SHOWN_N_LAST_MILESTONES # show last n signed milestones
     return render_template('cards_show.html', cards=cards, project_name=project_name,
         avg_completion = avg_completion, 
         last_completed_milestones=completed_milestones[:last_n_ms])
