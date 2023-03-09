@@ -12,4 +12,4 @@ echo "update deps:"
 ssh $DEPLOY_SERVER "cd $DEPLOY_DIR && ~/.local/bin/poetry update --no-dev"
 
 echo "restart service"
-ssh -t main.tbs1.de 'sudo supervisorctl restart testat'
+ssh -t $DEPLOY_SERVER 'sudo supervisorctl restart testat'
