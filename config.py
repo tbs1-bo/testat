@@ -25,3 +25,10 @@ BASE_SCORE = 50
 
 # show this many completed milestones in card overview
 SHOWN_N_LAST_MILESTONES = 10
+
+# authentication with google 
+GOOGLE_OAUTH_CLIENT_ID = 'xxx'
+GOOGLE_OAUTH_CLIENT_SECRET = 'xxx'
+GOOGLE_DISCOVERY_URL = (
+    "https://accounts.google.com/.well-known/openid-configuration"
+)
