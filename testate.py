@@ -563,4 +563,5 @@ def card_signing(mid, sign):
 
 if __name__ == '__main__':
     print("running adhoc server")
-    app.run(ssl_context='adhoc')
+    app.run(ssl_context='adhoc', debug=True)
+    
