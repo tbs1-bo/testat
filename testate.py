@@ -17,6 +17,7 @@ import tempfile
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 import json
+from flask_dance.contrib.azure import make_azure_blueprint, azure
 
 # change locale to support german sorting order respecting umlauts
 locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
@@ -35,6 +36,14 @@ db = SQLAlchemy(app)
 G_CLIENT_ID = app.config['GOOGLE_OAUTH_CLIENT_ID']
 G_CLIENT_SECRET = app.config['GOOGLE_OAUTH_CLIENT_SECRET']
 gauth_client = WebApplicationClient(G_CLIENT_ID)
+
+blueprint = make_azure_blueprint(
+    client_id=app.config['AZURE_OAUTH_APPLICATION_ID'],
+    tenant=app.config['AZURE_OAUTH_TENANCY'],
+    client_secret=app.config['AZURE_OAUTH_CLIENT_SECRET'],
+)
+app.register_blueprint(blueprint, url_prefix="/login_azure")
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -215,6 +224,28 @@ def login():
 
 def get_google_provider_cfg():
     return requests.get(app.config['GOOGLE_DISCOVERY_URL']).json()
+
+@app.route('/login_azure')
+def login_azure():
+    print("login azure")
+    if not azure.authorized:
+        print("azure not authorized")
+        return redirect(url_for('azure.login'))
+
+    resp = azure.get('/v1.0/me')
+    print(f"resp {resp} {resp.ok=}")
+    if resp.ok:
+        users_email = resp.json()['mail']
+        app.logger.debug(f'login_azure: "{users_email}"')
+
+        if DBUser.query.get(users_email) is None:
+            app.logger.warn(f'login: "{users_email}" not found in database')
+            flash(f"Email {users_email} nicht registriert.")
+            return redirect(url_for('login'))
+        else:
+            login_user(User(users_email))
+            flash('Login erfolgreich')
+            return redirect(url_for('index'))
 
 @app.get('/login_google')
 def login_google():
