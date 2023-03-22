@@ -392,15 +392,16 @@ def cards_export(project_name):
             sheet.append(row + row_ms)
 
     sheet = wb.create_sheet('Übersicht')
-    sheet.append(["Name", "Vollständigkeit", "Punkte"])
+    sheet.append(["Name", "Vollständigkeit", "Punkte", "Prozent"])
     sheet['C1'].comment = openpyxl.comments.Comment("Punktzahl ermittelt aus " +\
         f"Basispunktzahl {config.BASE_SCORE} pro Meilenstein und vermindert " +\
         "um 1 für jeden anderen früher abgeschlossenen Meilenstein.", "Exporter")
     app.logger.debug(f'compute card score with base score {config.BASE_SCORE}')
     for c in cards:
-        completed, _total = c.completed_status()
+        completed, total = c.completed_status()
+        percent = 100 * completed / total
         cardpoints = sum(mspoints[ms] for ms in mspoints if ms.card==c)
-        sheet.append([c.student_name, completed, cardpoints])
+        sheet.append([c.student_name, completed, cardpoints, percent])
 
     _filehandle, dest_filename = tempfile.mkstemp('.xlsx', 'testat_export_')  
     wb.save(dest_filename)
