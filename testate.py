@@ -177,7 +177,7 @@ class Milestone(db.Model):
     def is_completed(self):
         return self.finished is not None
 
-def _auth(username, password):
+def _auth_smtp(username, password):
     app.logger.info(f'auth "{username}"')
 
     if db.session.get(DBUser ,username) is None:
@@ -203,7 +203,7 @@ def login():
     elif request.method == "POST":
         username = request.form['username']
         app.logger.debug(f'trying to login "{username}"')
-        if _auth(username, request.form['password']):
+        if _auth_smtp(username, request.form['password']):
             flash('Login erfolgreich')
             app.logger.debug(f'login successful {current_user}')
             #next = request.args.get('next')
