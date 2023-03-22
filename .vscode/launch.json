@@ -13,7 +13,7 @@
             "justMyCode": true,
             "env": {
                 "FLASK_APP": "testate.py",
-                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "1",
                 "TESTAT_CONF": "config.local.py"
             },
         },
@@ -24,7 +24,7 @@
             "module": "flask",
             "env": {
                 "FLASK_APP": "testate.py",
-                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "1",
                 "TESTAT_CONF": "config.local.py"
             },
             "args": [
