@@ -36,7 +36,7 @@ blueprint = make_azure_blueprint(
     client_secret=app.config['AZURE_OAUTH_CLIENT_SECRET'],
 )
 app.register_blueprint(blueprint, url_prefix="/login_azure")
-
+AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT = app.config['AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT']
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -218,7 +218,8 @@ def login():
 @app.route('/login_azure')
 def login_azure():
     app.logger.debug("login azure")
-    if not azure.authorized:
+    token_nearly_expired = azure.token.get('expires_in') < AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT
+    if not azure.authorized or token_nearly_expired:
         app.logger.debug("azure not authorized")
         return redirect(url_for('azure.login'))
 
@@ -234,6 +235,7 @@ def login_azure():
         else:
             login_user(User(users_email))
             flash('Login erfolgreich')
+            app.logger.debug(f'token expires in {azure.token.get("expires_in")}')
             return redirect(url_for('index'))
     else:
         flash('Login fehlgeschlagen')
