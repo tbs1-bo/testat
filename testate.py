@@ -37,6 +37,7 @@ G_CLIENT_ID = app.config['GOOGLE_OAUTH_CLIENT_ID']
 G_CLIENT_SECRET = app.config['GOOGLE_OAUTH_CLIENT_SECRET']
 gauth_client = WebApplicationClient(G_CLIENT_ID)
 
+# authentication support with azure
 blueprint = make_azure_blueprint(
     client_id=app.config['AZURE_OAUTH_APPLICATION_ID'],
     tenant=app.config['AZURE_OAUTH_TENANCY'],
@@ -227,13 +228,12 @@ def get_google_provider_cfg():
 
 @app.route('/login_azure')
 def login_azure():
-    print("login azure")
+    app.logger.debug("login azure")
     if not azure.authorized:
-        print("azure not authorized")
+        app.logger.debug("azure not authorized")
         return redirect(url_for('azure.login'))
 
     resp = azure.get('/v1.0/me')
-    print(f"resp {resp} {resp.ok=}")
     if resp.ok:
         users_email = resp.json()['mail']
         app.logger.debug(f'login_azure: "{users_email}"')
@@ -246,6 +246,9 @@ def login_azure():
             login_user(User(users_email))
             flash('Login erfolgreich')
             return redirect(url_for('index'))
+    else:
+        flash('Login fehlgeschlagen')
+        return redirect(url_for('login'))
 
 @app.get('/login_google')
 def login_google():
@@ -594,5 +597,5 @@ def card_signing(mid, sign):
 
 if __name__ == '__main__':
     print("running adhoc server")
-    app.run(ssl_context='adhoc', debug=True)
+    app.run(ssl_context='adhoc')
     
