@@ -180,7 +180,7 @@ def _auth(username, password):
     app.logger.info(f'auth "{username}"')
 
     if db.session.get(DBUser ,username) is None:
-        app.logger.warn(f'login: "{username}" not found in database')
+        app.logger.warning(f'login: "{username}" not found in database')
         return False
 
     s = smtplib.SMTP(SMTP_AUTHSERVER)
@@ -192,7 +192,7 @@ def _auth(username, password):
         return True
 
     except smtplib.SMTPAuthenticationError:
-        app.logger.warn(f'unable to login at {username}@{SMTP_AUTHSERVER}')
+        app.logger.warning(f'unable to login at {username}@{SMTP_AUTHSERVER}')
         return False
 
 @app.route('/login', methods=["GET", "POST"])
@@ -229,7 +229,7 @@ def login_azure():
         app.logger.debug(f'login_azure: "{users_email}"')
 
         if db.session.get(DBUser, users_email) is None:
-            app.logger.warn(f'login: "{users_email}" not found in database')
+            app.logger.warning(f'login: "{users_email}" not found in database')
             flash(f"Email {users_email} nicht registriert.")
             return redirect(url_for('login'))
         else:
@@ -259,7 +259,7 @@ def index():
 @login_required
 def admin():
     if not current_user.is_admin():
-        app.logger.warn(f'admin page not allowed for {current_user}')
+        app.logger.warning(f'admin page not allowed for {current_user}')
         return "Fobidden", 403
 
     cards = Card.query.all()
@@ -274,14 +274,14 @@ def admin():
 @login_required
 def admin_user_add():
     if not current_user.is_admin():
-        app.logger.warn(f'adding user not allowed for {current_user}')
+        app.logger.warning(f'adding user not allowed for {current_user}')
         return "Fobidden", 403
 
     uid = request.form['uid']
     u = DBUser(uid=uid)
     db.session.add(u)
     db.session.commit()
-    app.logger.warn(f'user added: {uid}')
+    app.logger.warning(f'user added: {uid}')
 
     return redirect(url_for('admin'))
 
@@ -289,11 +289,11 @@ def admin_user_add():
 @login_required
 def admin_cards_visibility(project_name, visible):
     if not current_user.is_admin():
-        app.logger.warn(f'changing card visibility not allowed for {current_user}')
+        app.logger.warning(f'changing card visibility not allowed for {current_user}')
         return "Forbidden", 403
 
     vis = visible == 1
-    app.logger.warn(f'change visibility of all cards in "{project_name}" to {visible}')
+    app.logger.warning(f'change visibility of all cards in "{project_name}" to {visible}')
     for c in Card.query.filter_by(project_name=project_name):
         c.visibility(vis)
 
@@ -303,11 +303,11 @@ def admin_cards_visibility(project_name, visible):
 @login_required
 def admin_card_visibility(cid, visible):
     if not current_user.is_admin():
-        app.logger.warn(f'changing card visibility not allowed for {current_user}')
+        app.logger.warning(f'changing card visibility not allowed for {current_user}')
         return "Forbidden", 403
         
     c = db.session.get(Card, cid)
-    app.logger.warn(f'change visibility of card {c} to {visible}')
+    app.logger.warning(f'change visibility of card {c} to {visible}')
     c.visibility(visible == "1")
 
     return redirect(url_for('admin'))
