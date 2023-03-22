@@ -219,10 +219,15 @@ def login():
 @app.route('/login_azure')
 def login_azure():
     app.logger.debug("login azure")
-    token_nearly_expired = azure.token.get('expires_in') < AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT
-    if not azure.authorized or token_nearly_expired:
+    if not azure.authorized:
         app.logger.debug("azure not authorized")
         return redirect(url_for('azure.login'))
+
+    if azure.token:
+        token_nearly_expired = azure.token.get('expires_in') < AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT
+        if token_nearly_expired:
+            app.logger.debug("azure token nearly expired")
+            return redirect(url_for('azure.login'))
 
     resp = azure.get('/v1.0/me')
     if resp.ok:
