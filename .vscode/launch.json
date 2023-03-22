@@ -5,6 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: TLS dev server",
+            "type": "python",
+            "request": "launch",
+            "program": "testate.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "FLASK_APP": "testate.py",
+                "FLASK_ENV": "development",
+                "TESTAT_CONF": "config.local.py"
+            },
+        },
+        {
             "name": "Python: Flask",
             "type": "python",
             "request": "launch",
