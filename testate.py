@@ -68,7 +68,7 @@ def load_user(userId):
 
 class User(UserMixin):
     def __init__(self, uid):
-        self.dbu = DBUser.query.get(uid)
+        self.dbu = db.get_or_404(DBUser, uid)
 
     def get_id(self):
         return self.dbu.uid
@@ -179,7 +179,7 @@ class Milestone(db.Model):
 def _auth(username, password):
     app.logger.info(f'auth "{username}"')
 
-    if DBUser.query.get(username) is None:
+    if db.session.get(DBUser ,username) is None:
         app.logger.warn(f'login: "{username}" not found in database')
         return False
 
@@ -228,7 +228,7 @@ def login_azure():
         users_email = resp.json()['mail']
         app.logger.debug(f'login_azure: "{users_email}"')
 
-        if DBUser.query.get(users_email) is None:
+        if db.session.get(DBUser, users_email) is None:
             app.logger.warn(f'login: "{users_email}" not found in database')
             flash(f"Email {users_email} nicht registriert.")
             return redirect(url_for('login'))
@@ -306,7 +306,7 @@ def admin_card_visibility(cid, visible):
         app.logger.warn(f'changing card visibility not allowed for {current_user}')
         return "Forbidden", 403
         
-    c = Card.query.get(cid)
+    c = db.session.get(Card, cid)
     app.logger.warn(f'change visibility of card {c} to {visible}')
     c.visibility(visible == "1")
 
@@ -409,7 +409,7 @@ def cards_export(project_name):
 @app.route('/card/<int:cid>/show')
 @login_required
 def card_show(cid):
-    c = Card.query.get(cid)
+    c = db.get_or_404(Card, cid)
     return render_template('card_edit.html', card=c)
 
 @app.post('/card/create/<project_name>')
@@ -453,7 +453,7 @@ def cards_create():
             # link card to all users referenced by the request
             for user in users:
                 app.logger.info(f'adding card to user {user}')
-                u = DBUser.query.get(user)
+                u = db.session.get(DBUser, user)
                 u.cards.append(card)
                 db.session.add(u)
             for m in milestones:
@@ -471,7 +471,7 @@ def card_user_add():
     pname = request.form['project_name']
     username = request.form['username']
 
-    user = DBUser.query.get(username)
+    user = db.session.get(DBUser, username)
     if not user:
         flash(f'Nutzer nicht gefunden {username}')
         return redirect(url_for('cards_show', project_name=pname))
@@ -516,7 +516,7 @@ def card_unsign(mid):
 def card_signing(mid, sign):
     'sign (sign=True) or unsign (sign=False) a milestone on a card'
 
-    m = Milestone.query.get(mid)
+    m = db.session.get(Milestone, mid)
     user = current_user.get_id()
     m.signed_by = user
     m.finished = datetime.now() if sign else None
