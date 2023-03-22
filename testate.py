@@ -15,6 +15,7 @@ import locale
 from functools import cmp_to_key
 import tempfile
 from flask_dance.contrib.azure import make_azure_blueprint, azure
+from flask_dance.consumer import oauth_authorized
 
 # change locale to support german sorting order respecting umlauts
 locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
@@ -216,6 +217,23 @@ def login():
             flash('Login fehlgeschlagen')
             return redirect(url_for('login'))
 
+def login_testate_user(response):
+    if response.ok:
+        users_email = response.json()['mail']
+        app.logger.debug(f'login_azure: "{users_email}"')
+        if db.session.get(DBUser, users_email) is None:
+            app.logger.warning(f'login: "{users_email}" not found in database')
+            flash(f"Email {users_email} nicht registriert.")
+            return redirect(url_for('login'))
+        else:
+            login_user(User(users_email), remember=True)
+            flash('Login erfolgreich')
+            app.logger.debug(f'token expires in {azure.token.get("expires_in")}')
+            return redirect(url_for('index'))
+    else:
+        flash('Login fehlgeschlagen')
+        return redirect(url_for('login'))
+
 @app.route('/login_azure')
 def login_azure():
     app.logger.debug("login azure")
@@ -230,22 +248,12 @@ def login_azure():
             return redirect(url_for('azure.login'))
 
     resp = azure.get('/v1.0/me')
-    if resp.ok:
-        users_email = resp.json()['mail']
-        app.logger.debug(f'login_azure: "{users_email}"')
+    return login_testate_user(resp)
 
-        if db.session.get(DBUser, users_email) is None:
-            app.logger.warning(f'login: "{users_email}" not found in database')
-            flash(f"Email {users_email} nicht registriert.")
-            return redirect(url_for('login'))
-        else:
-            login_user(User(users_email), remember=True)
-            flash('Login erfolgreich')
-            app.logger.debug(f'token expires in {azure.token.get("expires_in")}')
-            return redirect(url_for('index'))
-    else:
-        flash('Login fehlgeschlagen')
-        return redirect(url_for('login'))
+@oauth_authorized.connect
+def azure_logged_in(blueprint, token):
+    resp = blueprint.session.get('/v1.0/me')
+    return login_testate_user(resp)
 
 @app.route('/logout')
 @login_required
