@@ -20,9 +20,7 @@ Flask-Login = "^0.6.0"
 GitPython = "^3.1.27"
 # https://openpyxl.readthedocs.io/en/stable/changes.html
 openpyxl = "^3.0.9"
-# libs for google authentication support
-oauthlib = "^3.2.2"
-requests = "^2.28.2"
+# OAuthentication support
 Flask-Dance = "^6.2.0"
 
 [tool.poetry.dev-dependencies]

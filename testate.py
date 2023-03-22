@@ -14,9 +14,6 @@ import git
 import locale
 from functools import cmp_to_key
 import tempfile
-from oauthlib.oauth2 import WebApplicationClient
-import requests
-import json
 from flask_dance.contrib.azure import make_azure_blueprint, azure
 
 # change locale to support german sorting order respecting umlauts
@@ -31,11 +28,6 @@ SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
 APP_DOMAIN = app.config['APP_DOMAIN']
 
 db = SQLAlchemy(app)
-
-# authentication support with google
-G_CLIENT_ID = app.config['GOOGLE_OAUTH_CLIENT_ID']
-G_CLIENT_SECRET = app.config['GOOGLE_OAUTH_CLIENT_SECRET']
-gauth_client = WebApplicationClient(G_CLIENT_ID)
 
 # authentication support with azure
 blueprint = make_azure_blueprint(
@@ -223,9 +215,6 @@ def login():
             flash('Login fehlgeschlagen')
             return redirect(url_for('login'))
 
-def get_google_provider_cfg():
-    return requests.get(app.config['GOOGLE_DISCOVERY_URL']).json()
-
 @app.route('/login_azure')
 def login_azure():
     app.logger.debug("login azure")
@@ -248,64 +237,6 @@ def login_azure():
             return redirect(url_for('index'))
     else:
         flash('Login fehlgeschlagen')
-        return redirect(url_for('login'))
-
-@app.get('/login_google')
-def login_google():
-    # mainly taken from https://realpython.com/flask-google-login/
-
-    google_provider_cfg = get_google_provider_cfg()
-    auth_endpoint = google_provider_cfg['authorization_endpoint']
-    request_uri = gauth_client.prepare_request_uri(
-        auth_endpoint,
-        redirect_uri=request.base_url + "/callback",
-        scope=["openid", "email", "profile"],
-    )
-    return redirect(request_uri)
-
-@app.route('/login_google/callback', methods=["GET", "POST"])
-def login_google_callback():
-    # mainly taken from https://realpython.com/flask-google-login/
-    code = request.args.get("code")
-    token_endpoint = get_google_provider_cfg()["token_endpoint"]
-    token_url, headers, body = gauth_client.prepare_token_request(
-        token_endpoint,
-        authorization_response=request.url,
-        redirect_url=request.base_url,
-        code=code
-    )
-    token_response = requests.post(
-        token_url,
-        headers=headers,
-        data=body,
-        auth=(G_CLIENT_ID, G_CLIENT_SECRET)
-    )
-
-    # Parse the tokens!
-    gauth_client.parse_request_body_response(json.dumps(token_response.json()))
-
-    # Now that you have tokens (yay) let's find and hit the URL
-    # from Google that gives you the user's profile information,
-    # including their Google profile image and email
-    userinfo_endpoint = get_google_provider_cfg()["userinfo_endpoint"]
-    uri, headers, body = gauth_client.add_token(userinfo_endpoint)
-    userinfo_response = requests.get(uri, headers=headers, data=body)
-    if userinfo_response.json().get("email_verified"):
-        users_email = userinfo_response.json()["email"]
-
-        app.logger.info(f'auth with google "{users_email}"')
-
-        if DBUser.query.get(users_email) is None:
-            app.logger.warn(f'login: "{users_email}" not found in database')
-            flash(f"Email {users_email} nicht registriert.")
-            return redirect(url_for('login'))
-        else:
-            login_user(User(users_email))
-            flash('Login erfolgreich')
-            return redirect(url_for('index'))
-
-    else:
-        flash(f"User email {users_email} not available or not verified by Google.")
         return redirect(url_for('login'))
 
 @app.route('/logout')
