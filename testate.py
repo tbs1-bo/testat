@@ -34,6 +34,7 @@ blueprint = make_azure_blueprint(
     client_id=app.config['AZURE_OAUTH_APPLICATION_ID'],
     tenant=app.config['AZURE_OAUTH_TENANCY'],
     client_secret=app.config['AZURE_OAUTH_CLIENT_SECRET'],
+    redirect_to='index'
 )
 app.register_blueprint(blueprint, url_prefix="/login_azure")
 AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT = app.config['AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT']
