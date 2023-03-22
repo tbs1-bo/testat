@@ -188,7 +188,7 @@ def _auth(username, password):
 
     try:
         s.login(username, password)
-        login_user(User(username))
+        login_user(User(username), remember=True)
         return True
 
     except smtplib.SMTPAuthenticationError:
@@ -233,7 +233,7 @@ def login_azure():
             flash(f"Email {users_email} nicht registriert.")
             return redirect(url_for('login'))
         else:
-            login_user(User(users_email))
+            login_user(User(users_email), remember=True)
             flash('Login erfolgreich')
             app.logger.debug(f'token expires in {azure.token.get("expires_in")}')
             return redirect(url_for('index'))
