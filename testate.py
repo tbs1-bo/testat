@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 from typing import List, Dict
 from flask import Flask, render_template, redirect, request, \
@@ -39,6 +40,9 @@ blueprint = make_azure_blueprint(
 )
 app.register_blueprint(blueprint, url_prefix="/login_azure")
 AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT = app.config['AZURE_OAUTH_REFRESH_TOKEN_TIMEOUT']
+# be relaxed about changes in token scopes
+# https://github.com/singingwolfboy/flask-dance/issues/235
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
