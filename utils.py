@@ -1,3 +1,43 @@
+def gym_grading(percent):
+    '''
+    return Gymnasium grading from the given percentage
+        Source: https://www.kmk.org/fileadmin/Dateien/pdf/Bildung/AllgBildung/176_Vereinb-S-II-Abi_2021-02-18.pdf
+    (page 23)
+    100-95	0,7
+    94-90	1
+    89-85   1,3
+    84-80	1,7
+    79-75	2
+    74-70	2,3
+    69-65	2,7
+    64-60	3
+    59-55	3,3
+    54-50	3,7
+    49-45	4
+    44-40	4,3
+    39-33	4,7
+    32-27	5
+    26-20	5,3
+    19-0	6
+    '''
+    if percent >= 95: return 0.7
+    elif percent >= 90: return 1
+    elif percent >= 85: return 1.3
+    elif percent >= 80: return 1.7
+    elif percent >= 75: return 2
+    elif percent >= 70: return 2.3
+    elif percent >= 65: return 2.7
+    elif percent >= 60: return 3
+    elif percent >= 55: return 3.3
+    elif percent >= 50: return 3.7
+    elif percent >= 45: return 4
+    elif percent >= 40: return 4.3
+    elif percent >= 33: return 4.7
+    elif percent >= 27: return 5
+    elif percent >= 20: return 5.3
+    else: return 6
+
+
 def ihk_grading(percent):
     'return the IHK grading from the given percentage'
 
