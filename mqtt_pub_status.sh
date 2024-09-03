@@ -28,3 +28,7 @@ mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/os -m "$(cat /etc/os-release)"
 # uptime
 mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/uptime/human_readable -m "$(uptime -p)"
 mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/uptime/seconds -m "$(cat /proc/uptime | cut -d ' ' -f 1)"
+
+# count user
+user_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from db_user')
+mosquitto_pub -h $MQTT_HOST -t $TOPIC/user_count -m "$user_count"
