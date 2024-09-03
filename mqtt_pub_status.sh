@@ -15,3 +15,16 @@ echo project in $PROJDIR
 mosquitto_pub -h $MQTT_HOST -t $TOPIC/project/maintainer -m "Marco Bakera"
 mosquitto_pub -h $MQTT_HOST -t $TOPIC/project/repository_url -m "https://github.com/tbs1-bo/testat"
 
+# system information
+mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/info -m "$(uname -a)"
+
+#server time
+mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/server_time -m "$(date)"
+
+
+# os information
+mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/os -m "$(cat /etc/os-release)"
+
+# uptime
+mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/uptime/human_readable -m "$(uptime -p)"
+mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/uptime/seconds -m "$(cat /proc/uptime | cut -d ' ' -f 1)"
