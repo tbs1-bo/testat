@@ -25,6 +25,18 @@ mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/server_time -m "$(date)"
 # os information
 mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/os -m "$(cat /etc/os-release)"
 
+# cpu load
+mosquitto_pub -h $HOST -t $TOPIC/system/load/1_minute -m "$(cat /proc/loadavg | cut -d ' ' -f 1)"
+mosquitto_pub -h $HOST -t $TOPIC/system/load/5_minutes -m "$(cat /proc/loadavg | cut -d ' ' -f 2)"
+mosquitto_pub -h $HOST -t $TOPIC/system/load/15_minutes -m "$(cat /proc/loadavg | cut -d ' ' -f 3)"
+
+# ip adress
+mosquitto_pub -h $HOST -t $TOPIC/system/ip -m "$(hostname -I)"
+
+# hostname
+mosquitto_pub -h $HOST -t $TOPIC/system/hostname -m "$(hostname)"
+
+
 # uptime
 mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/uptime/human_readable -m "$(uptime -p)"
 mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/uptime/seconds -m "$(cat /proc/uptime | cut -d ' ' -f 1)"
