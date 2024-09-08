@@ -54,3 +54,5 @@ mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/cards/count -m "$cards_count"
 # project count
 project_count=$(sqlite3 $PROJDIR/testate.db 'select count(distinct project_name) from card')
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/projects/count -m "$project_count"
+
+echo "finished"
