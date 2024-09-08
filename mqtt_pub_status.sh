@@ -45,12 +45,12 @@ mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/uptime/seconds -m "$(cat /proc/u
 
 # count user
 user_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from db_user')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/user_count -m "$user_count"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/users/count -m "$user_count"
 
 # count cards
 cards_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from card')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/cards_count -m "$cards_count"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/cards/count -m "$cards_count"
 
 # project count
 project_count=$(sqlite3 $PROJDIR/testate.db 'select count(distinct project_name) from card')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/project_count -m "$project_count"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/projects/count -m "$project_count"
