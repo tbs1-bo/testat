@@ -10,6 +10,7 @@ TOPIC=testate
 
 echo publish to $MQTT_HOST
 echo project in $PROJDIR
+echo base topic is $TOPIC
 
 # last update
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date)"
