@@ -55,4 +55,17 @@ mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/cards/count -m "$cards_count"
 project_count=$(sqlite3 $PROJDIR/testate.db 'select count(distinct project_name) from card')
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/projects/count -m "$project_count"
 
+# milestones
+# select count(*) from milestone;
+ms_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone')
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/count -m "$ms_count"
+
+# finished
+ms_fin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where finished is not null')
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/finished -m "$ms_fin"
+
+# unfinished
+ms_unfin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where finished is null')
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/unfinished -m "$ms_unfin"
+
 echo "finished"
