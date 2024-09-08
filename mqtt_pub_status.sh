@@ -11,12 +11,15 @@ TOPIC=testate
 echo publish to $MQTT_HOST
 echo project in $PROJDIR
 
+PUB=mosquitto_pub -h $MQTT_HOST -r
+
 # last update
-mosquitto_pub -h $MQTT_HOST -t $TOPIC/last_update -r -m "$(date)"
+#mosquitto_pub -h $MQTT_HOST -t $TOPIC/last_update -r -m "$(date)"
+$PUB -t $TOPIC/last_update -m "$(date)"
 
 # info about project
-mosquitto_pub -h $MQTT_HOST -t $TOPIC/project/maintainer -m "Marco Bakera"
-mosquitto_pub -h $MQTT_HOST -t $TOPIC/project/repository_url -m "https://github.com/tbs1-bo/testat"
+$PUB -t $TOPIC/project/maintainer -m "Marco Bakera"
+$PUB -t $TOPIC/project/repository_url -m "https://github.com/tbs1-bo/testat"
 
 # system information
 mosquitto_pub -h $MQTT_HOST -t $TOPIC/system/info -m "$(uname -a)"
