@@ -69,4 +69,8 @@ mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/finished -m "$ms_fin"
 ms_unfin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where finished is null')
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/unfinished -m "$ms_unfin"
 
+# last milestone signer
+ms_lstsign=$(sqlite3 $PROJDIR/testate.db 'select signed_by from milestone order by finished desc limit 1')
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_signer -m "$ms_lstsign"
+
 echo "finished"
