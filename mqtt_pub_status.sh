@@ -71,6 +71,7 @@ mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/unfinished -m "$ms_unfin"
 
 # last milestone date
 ms_lstfint=$(sqlite3 $PROJDIR/testate.db 'select finished from milestone order by finished desc limit 1')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/datetime -m "$ms_lstfint"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/date -m "$(echo $ms_lstfint | cut -d ' ' -f 1)"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/time -m "$(echo $ms_lstfint | cut -d ' ' -f 2)"
 
 echo "finished"
