@@ -70,7 +70,7 @@ ms_unfin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where fin
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/unfinished -m "$ms_unfin"
 
 # last milestone date
-ms_lstsign=$(sqlite3 $PROJDIR/testate.db 'select fnished from milestone order by finished desc limit 1')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/datetime -m "$ms_lstsign"
+ms_lstfint=$(sqlite3 $PROJDIR/testate.db 'select finished from milestone order by finished desc limit 1')
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/datetime -m "$ms_lstfint"
 
 echo "finished"
