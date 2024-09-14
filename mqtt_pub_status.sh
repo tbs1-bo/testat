@@ -60,25 +60,25 @@ mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/cards/count -m "$cards_count"
 project_count=$(sqlite3 $PROJDIR/testate.db 'select count(distinct project_name) from card')
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/projects/count -m "$project_count"
 
-# milestones
-# select count(*) from milestone;
+# MILESTONES
+subtopic=$TOPIC/milestones
 ms_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/count -m "$ms_count"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/count -m "$ms_count"
 
 # finished
 ms_fin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where finished is not null')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/finished -m "$ms_fin"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/finished -m "$ms_fin"
 
 # unfinished
 ms_unfin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where finished is null')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/unfinished -m "$ms_unfin"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/unfinished -m "$ms_unfin"
 
 # last milestone date
 ms_lstfint=$(sqlite3 $PROJDIR/testate.db 'select finished from milestone order by finished desc limit 1')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/date -m "$(echo $ms_lstfint | cut -d ' ' -f 1)"
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/time -m "$(echo $ms_lstfint | cut -d ' ' -f 2)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished/date -m "$(echo $ms_lstfint | cut -d ' ' -f 1)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished/time -m "$(echo $ms_lstfint | cut -d ' ' -f 2)"
 ms_lstprj="$(sqlite3 $PROJDIR/testate.db 'select project_name from milestone join card c on c.id=card_id order by finished desc limit 1')"
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/project -m "$ms_lstprj"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished/project -m "$ms_lstprj"
 
 
 echo "finished"
