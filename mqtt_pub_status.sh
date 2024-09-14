@@ -13,7 +13,7 @@ echo project in $PROJDIR
 echo base topic is $TOPIC
 
 # last update
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date)"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date -Ins)"
 
 # PROJECT INFORMATION
 subtopic=$TOPIC/project
