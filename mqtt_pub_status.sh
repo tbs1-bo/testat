@@ -40,10 +40,12 @@ mosquitto_pub -h $MQTT_HOST -r -t $subtopic/ip -m "$(hostname -I)"
 # hostname
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/hostname -m "$(hostname)"
 
-
 # uptime
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime/human_readable -m "$(uptime -p)"
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime/seconds -m "$(cat /proc/uptime | cut -d ' ' -f 1)"
+uptime_json="{
+\"human_readable\": \"$(uptime -p)\",
+\"seconds\": \"$(cat /proc/uptime | cut -d ' ' -f 1)\"
+}"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime -m "$uptime_json"
 
 # PROJECT RELATED INFORMATION
 
