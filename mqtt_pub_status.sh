@@ -29,7 +29,7 @@ mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/info -m "$info_json"
 subtopic=$TOPIC/system
 
 #server time
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/server_time -m "$(date)"
+#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/server_time -m "$(date)"
 
 # cpu load
 load_json="{
@@ -37,20 +37,30 @@ load_json="{
 \"5_minutes\": $(cat /proc/loadavg | cut -d ' ' -f 2),
 \"15_minutes\": $(cat /proc/loadavg | cut -d ' ' -f 3)
 }"
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load -m "$load_json"
+#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load -m "$load_json"
 
 # ip adress
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/ip -m "$(hostname -I)"
+#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/ip -m "$(hostname -I| tr -d ' ')"
 
 # hostname
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/hostname -m "$(hostname)"
+#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/hostname -m "$(hostname)"
 
 # uptime
 uptime_json="{
 \"human_readable\": \"$(uptime -p)\",
 \"seconds\": $(cat /proc/uptime | cut -d ' ' -f 1)
 }"
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime -m "$uptime_json"
+#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime -m "$uptime_json"
+
+system_json="{
+\"load\": $load_json,
+\"ip\": \"$(hostname -I| tr -d ' ')\",
+\"hostname\": \"$(hostname)\",
+\"server_time\": \"$(date -Ins)\",
+\"uptime\": $uptime_json
+}"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system -m "$system_json"
+
 
 # PROJECT RELATED INFORMATION
 
