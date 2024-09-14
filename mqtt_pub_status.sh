@@ -22,13 +22,9 @@ mosquitto_pub -h $MQTT_HOST -r -t $subtopic/repository_url -m "https://github.co
 
 # SYSTEM INFORMATION
 subtopic=$TOPIC/system
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/info -m "$(uname -a)"
 
 #server time
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/server_time -m "$(date)"
-
-# os information
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/os -m "$(cat /etc/os-release)"
 
 # cpu load
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load/1_minute -m "$(cat /proc/loadavg | cut -d ' ' -f 1)"
