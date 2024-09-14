@@ -43,7 +43,7 @@ mosquitto_pub -h $MQTT_HOST -r -t $subtopic/hostname -m "$(hostname)"
 # uptime
 uptime_json="{
 \"human_readable\": \"$(uptime -p)\",
-\"seconds\": \"$(cat /proc/uptime | cut -d ' ' -f 1)\"
+\"seconds\": $(cat /proc/uptime | cut -d ' ' -f 1)
 }"
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime -m "$uptime_json"
 
