@@ -15,34 +15,38 @@ echo base topic is $TOPIC
 # last update
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date)"
 
-# info about project
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/project/maintainer -m "Marco Bakera"
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/project/repository_url -m "https://github.com/tbs1-bo/testat"
+# PROJECT INFORMATION
+subtopic=$TOPIC/project
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/maintainer -m "Marco Bakera"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/repository_url -m "https://github.com/tbs1-bo/testat"
 
-# system information
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/info -m "$(uname -a)"
+# SYSTEM INFORMATION
+subtopic=$TOPIC/system
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/info -m "$(uname -a)"
 
 #server time
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/server_time -m "$(date)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/server_time -m "$(date)"
 
 # os information
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/os -m "$(cat /etc/os-release)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/os -m "$(cat /etc/os-release)"
 
 # cpu load
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/load/1_minute -m "$(cat /proc/loadavg | cut -d ' ' -f 1)"
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/load/5_minutes -m "$(cat /proc/loadavg | cut -d ' ' -f 2)"
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/load/15_minutes -m "$(cat /proc/loadavg | cut -d ' ' -f 3)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load/1_minute -m "$(cat /proc/loadavg | cut -d ' ' -f 1)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load/5_minutes -m "$(cat /proc/loadavg | cut -d ' ' -f 2)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load/15_minutes -m "$(cat /proc/loadavg | cut -d ' ' -f 3)"
 
 # ip adress
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/ip -m "$(hostname -I)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/ip -m "$(hostname -I)"
 
 # hostname
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/hostname -m "$(hostname)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/hostname -m "$(hostname)"
 
 
 # uptime
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/uptime/human_readable -m "$(uptime -p)"
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/system/uptime/seconds -m "$(cat /proc/uptime | cut -d ' ' -f 1)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime/human_readable -m "$(uptime -p)"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime/seconds -m "$(cat /proc/uptime | cut -d ' ' -f 1)"
+
+# PROJECT RELATED INFORMATION
 
 # count user
 user_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from db_user')
