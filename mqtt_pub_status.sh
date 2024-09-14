@@ -77,8 +77,8 @@ mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/unfinished -m "$ms_unfin"
 ms_lstfint=$(sqlite3 $PROJDIR/testate.db 'select finished from milestone order by finished desc limit 1')
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/date -m "$(echo $ms_lstfint | cut -d ' ' -f 1)"
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/time -m "$(echo $ms_lstfint | cut -d ' ' -f 2)"
-ms_lstprj$(sqlite3 $PROJDIR/testate.db 'select project_name from milestone join card c on c.id=card_id order by finished desc limit 1')
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/project -m "$(echo $ms_lstfint | cut -d ' ' -f 2)"
+ms_lstprj=$(sqlite3 $PROJDIR/testate.db 'select project_name from milestone join card c on c.id=card_id order by finished desc limit 1')
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones/last_finished/project -m "$ms_lstprj"
 
 
 echo "finished"
