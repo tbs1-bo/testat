@@ -28,9 +28,9 @@ mosquitto_pub -h $MQTT_HOST -r -t $subtopic/server_time -m "$(date)"
 
 # cpu load
 load_json="{
-\"1_minute\": \"$(cat /proc/loadavg | cut -d ' ' -f 1)\",
-\"5_minutes\": \"$(cat /proc/loadavg | cut -d ' ' -f 2)\",
-\"15_minutes\": \"$(cat /proc/loadavg | cut -d ' ' -f 3)\"
+\"1_minute\": $(cat /proc/loadavg | cut -d ' ' -f 1),
+\"5_minutes\": $(cat /proc/loadavg | cut -d ' ' -f 2),
+\"15_minutes\": $(cat /proc/loadavg | cut -d ' ' -f 3)
 }"
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load -m "$load_json"
 
