@@ -56,10 +56,10 @@ project_count=$(sqlite3 $PROJDIR/testate.db 'select count(distinct project_name)
 ms_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone')
 # publish the counts
 stats_json="{
-\"users\": \"$user_count\",
-\"cards\": \"$cards_count\",
-\"projects\": \"$project_count\",
-\"milestones\": \"$ms_count\"
+\"users\": $user_count,
+\"cards\": $cards_count,
+\"projects\": $project_count,
+\"milestones\": $ms_count
 }"
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/stats -m "$stats_json"
 
