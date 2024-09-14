@@ -81,9 +81,9 @@ last_finished_json="{
 }"
 
 ms_json="{
-\"finished\": \"$ms_fin\",
-\"unfinished\": \"$ms_unfin\",
-\"last_finished\": \"$last_finished_json\"
+\"finished\": $ms_fin\,
+\"unfinished\": $ms_unfin,
+\"last_finished\": $last_finished_json
 }"
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones -m "$ms_json"
 
