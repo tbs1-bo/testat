@@ -37,13 +37,6 @@ load_json="{
 \"5_minutes\": $(cat /proc/loadavg | cut -d ' ' -f 2),
 \"15_minutes\": $(cat /proc/loadavg | cut -d ' ' -f 3)
 }"
-#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load -m "$load_json"
-
-# ip adress
-#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/ip -m "$(hostname -I| tr -d ' ')"
-
-# hostname
-#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/hostname -m "$(hostname)"
 
 # uptime
 uptime_json="{
