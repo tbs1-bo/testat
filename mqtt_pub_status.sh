@@ -16,9 +16,14 @@ echo base topic is $TOPIC
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date -Ins)"
 
 # PROJECT INFORMATION
-subtopic=$TOPIC/project
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/maintainer -m "Marco Bakera"
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/repository_url -m "https://github.com/tbs1-bo/testat"
+info_json="{
+\"name\": \"Testate\",
+\"description\": \"Digitale Verwaltung von Testatkarten\",
+\"maintainer\": \"Marco Bakera\",
+\"repository_url\": \"https://github.com/tbs1-bo/testat\"
+}"
+echo $info_json
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/info -m "$info_json"
 
 # SYSTEM INFORMATION
 subtopic=$TOPIC/system
