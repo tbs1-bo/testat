@@ -27,9 +27,12 @@ subtopic=$TOPIC/system
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/server_time -m "$(date)"
 
 # cpu load
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load/1_minute -m "$(cat /proc/loadavg | cut -d ' ' -f 1)"
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load/5_minutes -m "$(cat /proc/loadavg | cut -d ' ' -f 2)"
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load/15_minutes -m "$(cat /proc/loadavg | cut -d ' ' -f 3)"
+load_json="{
+\"1_minute\": \"$(cat /proc/loadavg | cut -d ' ' -f 1)\",
+\"5_minutes\": \"$(cat /proc/loadavg | cut -d ' ' -f 2)\",
+\"15_minutes\": \"$(cat /proc/loadavg | cut -d ' ' -f 3)\"
+}"
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/load -m "$load_json"
 
 # ip adress
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/ip -m "$(hostname -I)"
