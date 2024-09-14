@@ -75,19 +75,20 @@ mosquitto_pub -h $MQTT_HOST -r -t $subtopic/unfinished -m "$ms_unfin"
 
 # last milestone date
 ms_lstfint=$(sqlite3 $PROJDIR/testate.db 'select finished from milestone order by finished desc limit 1')
+ms_lstfint_date=$(echo $ms_lstfint | cut -d ' ' -f 1)
+ms_lstfint_time=$(echo $ms_lstfint | cut -d ' ' -f 2)
 #mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished/date -m "$(echo $ms_lstfint | cut -d ' ' -f 1)"
 #mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished/time -m "$(echo $ms_lstfint | cut -d ' ' -f 2)"
 ms_lstprj="$(sqlite3 $PROJDIR/testate.db 'select project_name from milestone join card c on c.id=card_id order by finished desc limit 1')"
 #mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished/project -m "$ms_lstprj"
 
-
 last_finished_json="$(jq -n \
- --arg "date" "$(echo $ms_lstfint | cut -d ' ' -f 1)" \
- --arg "time" "$(echo $ms_lstfint | cut -d ' ' -f 2)" \
- --arg "project" $ms_lstprj \
+ --arg "date" "$ms_lstfint_date" \
+ --arg "time" "$$ms_lstfint_time" \
+ --arg "project" "$ms_lstprj" \
  '$ARGS.named' \
  )"
- echo $last_finished_json
+echo $last_finished_json
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished -m "$last_finished_json"
 
 echo "finished"
