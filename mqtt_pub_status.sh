@@ -82,14 +82,12 @@ mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished/time -m "$(echo $ms_ls
 ms_lstprj="$(sqlite3 $PROJDIR/testate.db 'select project_name from milestone join card c on c.id=card_id order by finished desc limit 1')"
 mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished/project -m "$ms_lstprj"
 
-# FIXME no running with jq 1.5.1 - as used on debian server
-#last_finished_json="$(jq -n \
-# --arg "date" "$ms_lstfint_date" \
-# --arg "time" "$$ms_lstfint_time" \
-# --arg "project" "$ms_lstprj 123" \
-# '$ARGS.named' \
-# )"
-#echo $last_finished_json
-#mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished -m "$last_finished_json"
+last_finished_json="{
+\"date\": \"$ms_lstfint_date\", 
+\"time\": \"$ms_lstfint_time\", 
+\"project\": \"$ms_lstprj\" 
+}"
+echo $last_finished_json
+mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished -m "$last_finished_json"
 
 echo "finished"
