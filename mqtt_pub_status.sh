@@ -53,18 +53,18 @@ mosquitto_pub -h $MQTT_HOST -r -t $subtopic/uptime -m "$uptime_json"
 user_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from db_user')
 cards_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from card')
 project_count=$(sqlite3 $PROJDIR/testate.db 'select count(distinct project_name) from card')
+ms_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone')
 # publish the counts
 stats_json="{
 \"users\": \"$user_count\",
 \"cards\": \"$cards_count\",
-\"projects\": \"$project_count\"
+\"projects\": \"$project_count\",
+\"milestones\": \"$ms_count\"
 }"
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/stats -m "$stats_json"
 
 # MILESTONES
 subtopic=$TOPIC/milestones
-ms_count=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone')
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/count -m "$ms_count"
 
 # finished
 ms_fin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where finished is not null')
