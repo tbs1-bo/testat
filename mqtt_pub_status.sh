@@ -81,7 +81,7 @@ last_finished_json="{
 }"
 
 ms_json="{
-\"finished\": $ms_fin\,
+\"finished\": $ms_fin,
 \"unfinished\": $ms_unfin,
 \"last_finished\": $last_finished_json
 }"
