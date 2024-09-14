@@ -64,17 +64,12 @@ stats_json="{
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/stats -m "$stats_json"
 
 # MILESTONES
-subtopic=$TOPIC/milestones
 
 # finished
 ms_fin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where finished is not null')
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/finished -m "$ms_fin"
-
 # unfinished
 ms_unfin=$(sqlite3 $PROJDIR/testate.db 'select count(*) from milestone where finished is null')
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/unfinished -m "$ms_unfin"
-
-# last milestone date
+# last milestone
 ms_lstfint=$(sqlite3 $PROJDIR/testate.db 'select finished from milestone order by finished desc limit 1')
 ms_lstfint_date=$(echo $ms_lstfint | cut -d ' ' -f 1)
 ms_lstfint_time=$(echo $ms_lstfint | cut -d ' ' -f 2)
@@ -84,6 +79,12 @@ last_finished_json="{
 \"time\": \"$ms_lstfint_time\", 
 \"project\": \"$ms_lstprj\" 
 }"
-mosquitto_pub -h $MQTT_HOST -r -t $subtopic/last_finished -m "$last_finished_json"
+
+ms_json="{
+\"finished\": \"$ms_fin\",
+\"unfinished\": \"$ms_unfin\",
+\"last_finished\": \"$last_finished_json\"
+}"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/milestones -m "$ms_json"
 
 echo "finished"
