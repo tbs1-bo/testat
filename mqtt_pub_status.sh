@@ -11,6 +11,7 @@ TOPIC=testate
 echo publish to $MQTT_HOST
 echo project in $PROJDIR
 echo base topic is $TOPIC
+echo URL is $URL
 
 # last update
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date -Ins)"
@@ -20,6 +21,7 @@ info_json="{
 \"name\": \"Testate\",
 \"description\": \"Digitale Verwaltung von Testatkarten\",
 \"maintainer\": \"Marco Bakera\",
+\"url\": \"$URL\",
 \"repository_url\": \"https://github.com/tbs1-bo/testat\"
 }"
 echo $info_json
