@@ -14,7 +14,7 @@ echo base topic is $TOPIC
 echo URL is $URL
 
 # last update
-mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date -Ins)"
+mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date)"
 
 # PROJECT INFORMATION
 info_json="{
