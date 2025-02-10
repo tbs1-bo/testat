@@ -22,6 +22,7 @@ Testatkarten "{{ project_name }}"
                 </a> 
                 (Mittel: {{ avg_completion|round(2) }})                
             </th>
+            <th>Sichtbarkeit</th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +42,15 @@ Testatkarten "{{ project_name }}"
                 {% endfor %} |
                 {{ compl }} / {{ tot }}
             </td>
+            <td>
+                <a href="{{ url_for('toggle_card_visibility', cid=card.id) }}">
+                    {% if card.is_visible %}
+                    Verbergen
+                    {% else %}
+                    Anzeigen
+                    {% endif %}
+                </a>
+            </td>
         </tr>
     {% endfor %}
 
@@ -48,7 +58,16 @@ Testatkarten "{{ project_name }}"
 </table>
 
 <hr>
+
 <div style="text-align: right;">
+    <a href="{{ url_for('cards_show', project_name=project_name, show_hidden=not show_hidden) }}">
+        {% if show_hidden %}
+        Verborgene Karten ausblenden
+        {% else %}
+        Verborgene Karten anzeigen
+        {% endif %}
+    </a>
+    |
     <a href="{{ url_for('cards_export', project_name=project_name) }}"
         title="Export">Export</a>
 </div>

@@ -331,12 +331,30 @@ def admin_card_visibility(cid, visible):
 
     return redirect(url_for('admin'))
 
+@app.route('/card/<int:cid>/toggle_visibility')
+@login_required
+def toggle_card_visibility(cid):
+    c = db.get_or_404(Card, cid)
+    if current_user.get_id() not in [user.uid for user in c.users]:
+        app.logger.warning(f'User {current_user.get_id()} is not allowed to change visibility of card {cid}')
+        return "Forbidden", 403
+
+    c.visibility(not c.is_visible)
+    app.logger.info(f'User {current_user.get_id()} toggled visibility of card {cid} to {c.is_visible}')
+    return redirect(url_for('cards_show', project_name=c.project_name))
+
+
 @app.route('/cards/show/<project_name>')
 @login_required
 def cards_show(project_name):
     order_by = request.args.get('order_by', 'student_name')
+    show_hidden = request.args.get('show_hidden', 'false').lower() == 'true'
 
-    cards = [c for c in current_user.dbu.visible_cards() if c.project_name==project_name]
+    #cards = [c for c in current_user.dbu.visible_cards() if c.project_name==project_name]
+    if show_hidden:
+        cards = Card.query.filter_by(project_name=project_name).all()
+    else:
+        cards = Card.query.filter_by(project_name=project_name, is_visible=True).all()
 
     completed_ms, total_ms = 0, 0
     for c in cards:
@@ -364,6 +382,7 @@ def cards_show(project_name):
 
     last_n_ms = app.config["SHOWN_N_LAST_MILESTONES"] # show last n signed milestones
     return render_template('cards_show.html', cards=cards, project_name=project_name,
+        show_hidden=show_hidden,
         avg_completion = avg_completion, 
         last_completed_milestones=completed_milestones[:last_n_ms])
 
@@ -553,4 +572,3 @@ def card_signing(mid, sign):
 if __name__ == '__main__':
     print("running adhoc server")
     app.run(ssl_context='adhoc')
-    
