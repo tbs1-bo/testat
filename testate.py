@@ -271,8 +271,17 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    projs = sorted(current_user.project_names())
-    return render_template('index.html', projects=projs)
+    # Alle sichtbaren Projekte
+    visible_cards = Card.query.filter_by(is_visible=True).all()
+    visible_projects = set(c.project_name for c in visible_cards)
+    
+    # Projekte mit versteckten Karten
+    hidden_cards = Card.query.filter_by(is_visible=False).all()
+    hidden_projects = set(c.project_name for c in hidden_cards) - visible_projects
+    
+    return render_template('index.html', 
+                         visible_projects=sorted(visible_projects),
+                         hidden_projects=sorted(hidden_projects))
 
 @app.route('/admin')
 @login_required
