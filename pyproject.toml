@@ -5,26 +5,25 @@ description = ""
 authors = ["Marco Bakera <marco@bakera.de>"]
 
 [tool.poetry.dependencies]
-python = "^3.7.3"
-# https://flask.palletsprojects.com/en/2.2.x/changes/
-Flask = "^2.2.2"
+python = "^3.11"
+# https://flask.palletsprojects.com/en/stable/changes/
+flask = "^3.1.0"
 # https://docs.gunicorn.org/en/stable/news.html
 gunicorn = "^22.0.0"
 # https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/changes/
-Flask-SQLAlchemy = "^3.0.0"
+flask-sqlalchemy = "^3.1.1"
 # https://github.com/theskumar/python-dotenv/blob/master/CHANGELOG.md
 python-dotenv = "^0.21.0"
 # https://github.com/maxcountryman/flask-login/blob/main/CHANGES.md
-Flask-Login = "^0.6.0"
+flask-login = "^0.6.3"
 # https://gitpython.readthedocs.io/en/stable/changes.html
 GitPython = "^3.1.27"
 # https://openpyxl.readthedocs.io/en/stable/changes.html
-openpyxl = "^3.0.9"
+openpyxl = "^3.1.5"
 # OAuthentication support
-Flask-Dance = "^6.2.0"
-blinker = "^1.5"
+flask-dance = "^7.1.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pylint = "^2.15.2"
 # adhoc ssl support
 pyOpenSSL = "^23.0.0"
