@@ -68,6 +68,11 @@ Testatkarten "{{ project_name }}"
         {% endif %}
     </a>
     |
+    <a href="{{ url_for('cards_visibility_all', project_name=project_name, visible=0) }}"
+        onclick="return confirm('Wirklich alle Karten ausblenden?')">
+        Alle Karten ausblenden
+    </a>
+    |
     <a href="{{ url_for('cards_export', project_name=project_name) }}"
         title="Export">Export</a>
 </div>
