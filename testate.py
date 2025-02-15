@@ -271,12 +271,14 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    # Alle sichtbaren Projekte
-    visible_cards = Card.query.filter_by(is_visible=True).all()
-    visible_projects = set(c.project_name for c in visible_cards)
+    # Split into visible and hidden cards
+    visible_cards = current_user.dbu.visible_cards()
+    hidden_cards = [c for c in current_user.dbu.cards if not c.is_visible]
+    app.logger.debug(f'visible cards: {visible_cards}')
+    app.logger.debug(f'hidden cards: {hidden_cards}')
     
-    # Projekte mit versteckten Karten
-    hidden_cards = Card.query.filter_by(is_visible=False).all()
+    # Extract unique project names
+    visible_projects = set(c.project_name for c in visible_cards)
     hidden_projects = set(c.project_name for c in hidden_cards) - visible_projects
     
     return render_template('index.html', 
