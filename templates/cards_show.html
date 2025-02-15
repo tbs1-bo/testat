@@ -43,11 +43,12 @@ Testatkarten "{{ project_name }}"
                 {{ compl }} / {{ tot }}
             </td>
             <td>
-                <a href="{{ url_for('toggle_card_visibility', cid=card.id) }}">
+                <a href="{{ url_for('toggle_card_visibility', cid=card.id) }}" 
+                   title="{% if card.is_visible %}Verbergen{% else %}Anzeigen{% endif %}">
                     {% if card.is_visible %}
-                    Verbergen
+                    👁️
                     {% else %}
-                    Anzeigen
+                    ⊘
                     {% endif %}
                 </a>
             </td>
