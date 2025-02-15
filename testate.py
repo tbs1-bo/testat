@@ -271,8 +271,19 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    projs = sorted(current_user.project_names())
-    return render_template('index.html', projects=projs)
+    # Split into visible and hidden cards
+    visible_cards = current_user.dbu.visible_cards()
+    hidden_cards = [c for c in current_user.dbu.cards if not c.is_visible]
+    app.logger.debug(f'visible cards: {visible_cards}')
+    app.logger.debug(f'hidden cards: {hidden_cards}')
+    
+    # Extract unique project names
+    visible_projects = set(c.project_name for c in visible_cards)
+    hidden_projects = set(c.project_name for c in hidden_cards) - visible_projects
+    
+    return render_template('index.html', 
+                         visible_projects=sorted(visible_projects),
+                         hidden_projects=sorted(hidden_projects))
 
 @app.route('/admin')
 @login_required
@@ -568,6 +579,21 @@ def card_signing(mid, sign):
     flash(f'Meilenstein "{m.description}" von "{m.card.student_name}".')
 
     return redirect(url_for('cards_show', project_name=m.card.project_name))
+
+@app.route('/cards/<project_name>/visibility_all/<int:visible>')
+@login_required
+def cards_visibility_all(project_name, visible):
+    vis = visible == 1
+    app.logger.info(f'change visibility of all cards in "{project_name}" to {vis}')
+    
+    cards = Card.query.filter_by(project_name=project_name).all()
+    for card in cards:
+        # Prüfen ob der User Zugriff auf die Karte hat
+        if current_user.get_id() in [user.uid for user in card.users]:
+            card.visibility(vis)
+    
+    flash(f'Sichtbarkeit aller Karten in "{project_name}" geändert')
+    return redirect(url_for('cards_show', project_name=project_name))
 
 if __name__ == '__main__':
     print("running adhoc server")

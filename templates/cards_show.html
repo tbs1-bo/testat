@@ -43,11 +43,12 @@ Testatkarten "{{ project_name }}"
                 {{ compl }} / {{ tot }}
             </td>
             <td>
-                <a href="{{ url_for('toggle_card_visibility', cid=card.id) }}">
+                <a href="{{ url_for('toggle_card_visibility', cid=card.id) }}" 
+                   title="{% if card.is_visible %}Verbergen{% else %}Anzeigen{% endif %}">
                     {% if card.is_visible %}
-                    Verbergen
+                    👁️
                     {% else %}
-                    Anzeigen
+                    ⊘
                     {% endif %}
                 </a>
             </td>
@@ -66,6 +67,11 @@ Testatkarten "{{ project_name }}"
         {% else %}
         Verborgene Karten anzeigen
         {% endif %}
+    </a>
+    |
+    <a href="{{ url_for('cards_visibility_all', project_name=project_name, visible=0) }}"
+        onclick="return confirm('Wirklich alle Karten ausblenden?')">
+        Alle Karten ausblenden
     </a>
     |
     <a href="{{ url_for('cards_export', project_name=project_name) }}"

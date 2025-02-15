@@ -11,12 +11,25 @@ Testatkarten
 {% block body %}
 
 <ul>
-    {% for p in projects %}
+    {% for p in visible_projects %}
         <li> 
-            <a href="{{url_for('cards_show', project_name=p)}}"> {{ p }} </a>
+            <a href="{{url_for('cards_show', project_name=p)}}">{{ p }}</a>
         </li>
     {% endfor %}
 </ul>
+
+{% if hidden_projects %}
+<details>
+    <summary>Verborgene Projekte</summary>
+    <ul>
+        {% for p in hidden_projects %}
+        <li> 
+            <a href="{{url_for('cards_show', project_name=p, show_hidden=true)}}">{{ p }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</details>
+{% endif %}
 
 <strong>
     ➕ <a href="{{url_for('cards_create')}}">Projekt erstellen</a>
