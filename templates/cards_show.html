@@ -22,7 +22,6 @@ Testatkarten "{{ project_name }}"
                 </a> 
                 (Mittel: {{ avg_completion|round(2) }})                
             </th>
-            <th>Sichtbarkeit</th>
         </tr>
     </thead>
     <tbody>
@@ -41,16 +40,6 @@ Testatkarten "{{ project_name }}"
                     </span>
                 {% endfor %} |
                 {{ compl }} / {{ tot }}
-            </td>
-            <td>
-                <a href="{{ url_for('toggle_card_visibility', cid=card.id) }}" 
-                   title="{% if card.is_visible %}Verbergen{% else %}Anzeigen{% endif %}">
-                    {% if card.is_visible %}
-                    👁️
-                    {% else %}
-                    ⊘
-                    {% endif %}
-                </a>
             </td>
         </tr>
     {% endfor %}
