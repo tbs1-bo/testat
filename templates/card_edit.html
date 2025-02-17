@@ -28,6 +28,15 @@ Testatkarte {{ card.project_name}} von {{ card.student_name }}
     </li>
     {% endfor %}
 </ol>
+<hr>
+<a href="{{ url_for('toggle_card_visibility', cid=card.id) }}" 
+    title="{% if card.is_visible %}Verbergen{% else %}Anzeigen{% endif %}">
+    {% if card.is_visible %}
+    Karte verbergen
+    {% else %}
+    Karte anzeigen
+    {% endif %}
+</a>
 
 {% endblock %}
 
