@@ -1,0 +1,35 @@
+<table>
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>Projekt</th>
+            <th>Student</th>
+            <th>Vollständigkeit</th>
+            <th>Sichtbarkeit</th>
+            <th>Zugriff</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for card in cards %}
+        {% set compl, tot = card.completed_status() %}
+        <tr>
+            <td>{{ card.id }}</td>
+            <td>{{card.project_name}}</td>
+            <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
+            <td>{{ compl }} / {{ tot }}
+                {% if compl == tot %}
+                ☺️
+                {% endif %}
+            </td>
+            <td>
+                {% if card.is_visible %}sichtbar{% else %}verborgen{% endif %}
+            </td>
+            <td>
+                {% for u in card.users %}
+                {{u.name}}<br>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
