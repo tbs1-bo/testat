@@ -1,5 +1,22 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('milestones');
+    const counter = document.getElementById('number_of_milestones');
+    
+    function updateCount() {
+        const lines = textarea.value.trim().split('\n').filter(line => line.length > 0);
+        counter.textContent = `Anzahl Meilensteine: ${lines.length}`;
+    }
+    
+    textarea.addEventListener('input', updateCount);
+    updateCount(); // Initial count
+});
+</script>
+{% endblock %}
+
 {% block title %} 
 Projekt erstellen
 {% endblock %}
@@ -15,10 +32,14 @@ Projekt erstellen
         title="Projektname (kein / oder : im Titel)"
         pattern="[^/:]+">
     Meilensteine (ein Meilenstein pro Zeile)
-    <textarea name="milestones">
+    <textarea id="milestones" name="milestones">
 Meilenstein 1
 Meilenstein 2</textarea>
 
+    <div id="number_of_milestones">
+        Anzahl Meilensteine: 2
+    </div>
+    <hr>
     Schülerinnen und Schüler (eine Name pro Zeile)
     <textarea name="student_names">
 Max Muster
