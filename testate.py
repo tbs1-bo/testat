@@ -300,6 +300,15 @@ def admin():
     return render_template('admin.html', projects=projs,
         cards=cards, users=users, git_head=head_obj)
 
+@app.route('/admin/cards_table')
+@login_required
+def admin_cards_table():
+    if not current_user.is_admin():
+        return "Forbidden", 403
+        
+    cards = Card.query.all()
+    return render_template('admin_cards_table.html', cards=cards)
+
 @app.post('/admin/user/add')
 @login_required
 def admin_user_add():

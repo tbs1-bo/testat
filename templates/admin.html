@@ -25,50 +25,11 @@ Administration
 
 <h2>Alle Testatkarten</h2>
 
-<details>
-    <summary>zeigen</summary>
-
-    <table>
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Projekt </th> <th>Student</th> <th>Vollständigkeit</th>
-                <th>Sichtbarkeit</th> <th>Zugriff</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for card in cards %}
-            {% set compl, tot = card.completed_status() %}
-            <tr>
-                <td>{{ card.id }}</td>
-                <td>{{card.project_name}}
-                </td>
-                <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
-                <td>{{ compl }} / {{ tot }}
-                    {% if compl == tot %}
-                    ☺️
-                    {% endif %}
-                </td>
-                <td>
-                    {% if card.is_visible %}
-                    <a href="{{url_for('admin_card_visibility', cid=card.id, visible=0)}}">hide</a>
-                    {% else %}
-                    <a href="{{url_for('admin_card_visibility', cid=card.id, visible=1)}}">unhide</a>
-                    {% endif %}
-                </td>
-                <td>
-                    <span title="{{ card.users }}">
-                    {% for user in card.users %}
-                        {{ user.uid[:3] }}
-                    {% endfor %}
-                    </span>
-                </td>
-            </tr>
-        {% endfor %}
-
-        </tbody>
-    </table>
-</details>
+<button hx-get="{{ url_for('admin_cards_table') }}" 
+    hx-disabled-elt="this"
+    hx-swap="outerHTML"> 
+    Alle Karten einblenden (kann etwas dauern)
+</button>
 
 <h2>Nutzer</h2>
 
