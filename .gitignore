@@ -5,3 +5,6 @@ __pycache__/
 testate.db
 config.local.py
 *.log
+
+# production database
+testate.db.main.tbs1.de
