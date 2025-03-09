@@ -552,8 +552,15 @@ def card_user_add():
         return redirect(url_for('cards_show', project_name=pname))
 
     app.logger.info(f"adding user {username} to project {pname}")
+    new_user_already_assigned = False
     for card in Card.query.filter(Card.project_name == pname):
-        user.cards.append(card)
+        if card not in user.cards:
+            user.cards.append(card)
+        else:
+            new_user_already_assigned = True
+
+    if new_user_already_assigned:
+        flash(f'Der Nutzer {username} wurde bereits für das Projekt {card.project_name} freigegeben.')
 
     db.session.commit()
 
