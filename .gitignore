@@ -6,5 +6,6 @@ testate.db
 config.local.py
 *.log
 
-# production database
+# production, test database
 testate.db.main.tbs1.de
+testate.db.bak
