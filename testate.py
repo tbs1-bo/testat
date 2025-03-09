@@ -363,6 +363,11 @@ def toggle_card_visibility(cid):
     app.logger.info(f'User {current_user.get_id()} toggled visibility of card {cid} to {c.is_visible}')
     return redirect(url_for('cards_show', project_name=c.project_name))
 
+@app.route('/cards/add_content_form/<project_name>')
+@login_required
+def cards_add_content_form(project_name):
+    return render_template('cards_add_content_form.html', project_name=project_name)
+
 
 @app.route('/cards/show/<project_name>')
 @login_required

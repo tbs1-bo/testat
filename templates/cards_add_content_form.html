@@ -1,0 +1,28 @@
+<details>
+    <summary>Meilenstein hinzufügen
+    </summary>
+    <form action="{{ url_for('milestone_add') }}" method="POST">
+        <input name="milestone_description" placeholder="Neuer Meilenstein" required>
+        <input type="hidden" name="project_name" value="{{project_name}}">
+        <input type="submit" value="Hinzufügen">
+    </form>
+</details>
+
+<details>
+    <summary>Schüler, Schülerin hinzufügen
+    </summary>
+    <form action="{{ url_for('card_create', project_name=project_name) }}" method="POST">
+        <input name="student_name" placeholder="Schüler/Schülerin" required>
+        <input type="submit" value="Hinzufügen">
+    </form>
+</details>
+
+<details>
+    <summary>Lehrer, Lehrerin hinzufügen
+    </summary>
+    <form action="{{ url_for('card_user_add') }}" method="POST">
+        <input name="username" placeholder="Lehrer" required>
+        <input type="hidden" name="project_name" value="{{project_name}}">
+        <input type="submit" value="Hinzufügen">
+    </form>
+</details>
