@@ -400,11 +400,20 @@ def cards_show(project_name):
         completed_milestones.extend(c.completed_milestones())
     completed_milestones.sort(key=lambda m: m.finished, reverse=True)
 
+    # last milestone by student
+    lst_milestone_by_student = {}
+    for c in cards:
+        if c.completed_milestones():
+            # sort completed milestones by date
+            ms_sorted = sorted(c.completed_milestones(), key=lambda m: m.finished)
+            lst_milestone_by_student[c.student_name] = ms_sorted[-1]
+
     last_n_ms = app.config["SHOWN_N_LAST_MILESTONES"] # show last n signed milestones
     return render_template('cards_show.html', cards=cards, project_name=project_name,
         show_hidden=show_hidden,
         avg_completion = avg_completion, 
-        last_completed_milestones=completed_milestones[:last_n_ms])
+        last_completed_milestones=completed_milestones[:last_n_ms],
+        last_milestone_by_student=lst_milestone_by_student)
 
 def _calc_milestone_points(cards:List[Card], base_score) -> Dict[Milestone, int]:
     'Compute point for each card and return a dict mapping milestones to points.'

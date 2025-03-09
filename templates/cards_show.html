@@ -70,6 +70,7 @@ Testatkarten "{{ project_name }}"
 <details>
     <summary>Letzte Meilensteine
     </summary>
+    <h2>Letzte {{ last_completed_milestones | length }} Meilensteine</h2>
     <ul>
         {% for ms in last_completed_milestones %}
         <li>
@@ -79,6 +80,25 @@ Testatkarten "{{ project_name }}"
         </li>
         {% endfor %}
     </ul>
+    <h2>Letzte Meilensteine nach Schüler:in</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Schüler:in</th>
+                <th>Datum</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student, milestone in last_milestone_by_student.items() %}
+            <tr>
+                <td>
+                    <a href="{{url_for('card_show', cid=milestone.card.id)}}">{{ student }}</a>
+                </td>
+                <td>{{ milestone.finished.strftime("%Y-%m-%d") }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </details>
 
 <details>
