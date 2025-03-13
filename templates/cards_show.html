@@ -89,12 +89,16 @@ Testatkarten "{{ project_name }}"
             </tr>
         </thead>
         <tbody>
-            {% for student, milestone in last_milestone_by_student.items() %}
+            {% for card, milestone in last_milestone_by_student.items() %}
             <tr>
                 <td>
-                    <a href="{{url_for('card_show', cid=milestone.card.id)}}">{{ student }}</a>
+                    <a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a>
                 </td>
-                <td>{{ milestone.finished.strftime("%Y-%m-%d") }}</td>
+                {% if milestone %}
+                <td>{{ milestone.finished.strftime("%Y-%m-%d") }} (vor {{ (current_time - milestone.finished).days }} Tagen)</td>
+                {% else %}
+                <td>Kein Meilenstein</td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>
