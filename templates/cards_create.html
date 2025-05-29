@@ -3,6 +3,7 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // milestone counter code
     const textarea = document.getElementById('milestones');
     const counter = document.getElementById('number_of_milestones');
     
@@ -12,8 +13,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     textarea.addEventListener('input', updateCount);
-    updateCount(); // Initial count
+    updateCount();
+
+    // New code for copying student names
+    document.getElementById('copy_names').addEventListener('click', function() {
+        const selectedProject = document.getElementById('project_select').value;
+        const studentsList = JSON.parse(document.getElementById('project_data').textContent);
+        const studentNames = studentsList[selectedProject].join('\n');
+        document.getElementById('student_names').value = studentNames;
+    });
 });
+</script>
+
+<!-- Add hidden element with project data -->
+<script type="application/json" id="project_data">
+    {{project_students|tojson}}
 </script>
 {% endblock %}
 
@@ -39,8 +53,20 @@ Meilenstein 2</textarea>
     <div id="number_of_milestones">        
     </div>
     <hr>
+
+    <!-- Add project selection -->
+    <details>
+        <summary>Namen aus anderem Projekt übernehmen</summary>
+        <select id="project_select">
+            {% for project in project_students.keys()|sort %}
+            <option value="{{project}}">{{project}}</option>
+            {% endfor %}
+        </select>
+        <button type="button" id="copy_names">Namen übernehmen</button>
+    </details>
+
     Schülerinnen und Schüler (ein Name pro Zeile)
-    <textarea name="student_names">
+    <textarea id="student_names" name="student_names">
 Max Muster
 Moni Muster</textarea>
 

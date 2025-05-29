@@ -503,12 +503,23 @@ def card_create(project_name):
 
     return redirect(url_for('cards_show', project_name=project_name))
 
-@app.route('/cards/create', methods=["GET", "POST"])
+@app.route('/cards/create', methods=["GET", "POST"]) 
 @login_required
 def cards_create():
     if request.method == "GET":
         users = DBUser.query.all()
-        return render_template('cards_create.html', users=users)
+        # Get projects the current user has access to
+        projects = current_user.project_names()
+        # Get student names from each project 
+        project_students = {}
+        for proj in projects:
+            cards = Card.query.filter_by(project_name=proj).all()
+            students = sorted([c.student_name for c in cards])
+            project_students[proj] = students
+            
+        return render_template('cards_create.html', 
+                             users=users,
+                             project_students=project_students)
 
     elif request.method == "POST":
         pname = request.form['project_name']
