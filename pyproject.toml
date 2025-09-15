@@ -24,7 +24,7 @@ openpyxl = "^3.0.9"
 Flask-Dance = "^6.2.0"
 blinker = "^1.5"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pylint = "^2.15.2"
 # adhoc ssl support
 pyOpenSSL = "^23.0.0"
