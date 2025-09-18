@@ -1,5 +1,8 @@
 # TODO testing
 
+# docker build -t testate:latest .
+# docker run --rm -p 5000:5000 testate:latest
+
 # Use official Python image as base
 FROM python:3.9-slim
 
@@ -11,7 +14,7 @@ ENV POETRY_VERSION=1.7.1 \
 
 # Install system dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc libpq-dev curl locales && \
+    apt-get install -y --no-install-recommends gcc libpq-dev curl git locales && \
     pip install "poetry==$POETRY_VERSION" && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     echo "de_DE.UTF-8 UTF-8" > /etc/locale.gen && \
@@ -34,10 +37,10 @@ RUN poetry install --no-root --only main
 COPY . .
 
 # Expose port (adjust if needed)
-EXPOSE 8000
+EXPOSE 5000
 
 # Set environment variables for Flask
-ENV FLASK_APP=testate.py
+#ENV FLASK_APP=testate.py
 
 # Start the application using gunicorn
 #CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:8000", "--log-config", "logging.conf", "testate:app"]
