@@ -1,8 +1,8 @@
 # docker build -t testate:latest .
-# docker run --rm -p 5000:5000 testate:latest
+# docker run --rm -p 5000:5000 -v $(pwd)/testate.db:/app/testate.db testate:latest
 
 # Use official Python image as base
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Set environment variables
 ENV POETRY_VERSION=1.7.1 \

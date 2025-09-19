@@ -5,7 +5,7 @@ description = ""
 authors = ["Marco Bakera <marco@bakera.de>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 # https://flask.palletsprojects.com/en/2.2.x/changes/
 Flask = "^2.2.2"
 # https://docs.gunicorn.org/en/stable/news.html
