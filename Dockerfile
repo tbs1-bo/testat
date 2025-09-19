@@ -1,5 +1,3 @@
-# TODO testing
-
 # docker build -t testate:latest .
 # docker run --rm -p 5000:5000 testate:latest
 
@@ -30,7 +28,9 @@ WORKDIR /app
 # Copy poetry files first for better caching
 COPY pyproject.toml poetry.lock* ./
 
-# Install dependencies
+# Install dependencies 
+# --no-root to avoid installing the package itself
+# --only main to skip dev dependencies
 RUN poetry install --no-root --only main
 
 # Copy the rest of the application
@@ -39,9 +39,5 @@ COPY . .
 # Expose port (adjust if needed)
 EXPOSE 5000
 
-# Set environment variables for Flask
-#ENV FLASK_APP=testate.py
-
 # Start the application using gunicorn
-#CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:8000", "--log-config", "logging.conf", "testate:app"]
 CMD ["poetry", "run", "/app/start_prodserver.sh"]
