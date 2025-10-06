@@ -194,7 +194,7 @@ def _auth_smtp(username, password):
     s.starttls()
 
     try:
-        s.login(username, password)
+        s.login(username, password) 
         login_user(User(username), remember=True)
         return True
 
@@ -638,6 +638,36 @@ def cards_visibility_all(project_name, visible):
     
     flash(f'Sichtbarkeit aller Karten in "{project_name}" geändert')
     return redirect(url_for('cards_show', project_name=project_name))
+
+@app.route('/project/rename', methods=["POST"])
+@login_required
+def project_rename():
+    old_name = request.form['old_name']
+    new_name = request.form['new_name'].strip()
+    
+    # Prüfe ob User Zugriff auf das Projekt hat
+    if old_name not in current_user.project_names():
+        app.logger.warning(f'User {current_user} has no access to project {old_name}')
+        return "Forbidden", 403
+    
+    if not new_name:
+        flash('Neuer Projektname darf nicht leer sein')
+        return redirect(url_for('index'))
+        
+    if new_name in all_project_names():
+        flash(f'Projektname "{new_name}" existiert bereits')
+        return redirect(url_for('index'))
+    
+    cards = Card.query.filter_by(project_name=old_name).all()
+    for card in cards:
+        card.project_name = new_name
+        db.session.add(card)
+    
+    db.session.commit()
+    app.logger.info(f'User {current_user} renamed project from "{old_name}" to "{new_name}"')
+    flash(f'Projekt von "{old_name}" zu "{new_name}" umbenannt')
+    
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     print("running adhoc server")

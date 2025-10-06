@@ -18,6 +18,11 @@ Testatkarten
     {% endfor %}
 </ul>
 
+<strong>
+    ➕ <a href="{{url_for('cards_create')}}">Projekt erstellen</a>
+</strong>
+
+
 {% if hidden_projects %}
 <details>
     <summary>Verborgene Projekte</summary>
@@ -31,8 +36,27 @@ Testatkarten
 </details>
 {% endif %}
 
-<strong>
-    ➕ <a href="{{url_for('cards_create')}}">Projekt erstellen</a>
-</strong>
+
+<details>
+    <summary>Projekt umbenennen</summary>
+    <form action="{{ url_for('project_rename') }}" method="post">
+        <fieldset>
+            <legend>Projekt umbenennen</legend>
+            <p>
+                <label for="old_name">Projekt auswählen</label>
+                <select name="old_name" id="old_name" required>
+                    {% for project in visible_projects %}
+                    <option value="{{ project }}">{{ project }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+            <p>
+                <label for="new_name">Neuer Name</label>
+                <input type="text" name="new_name" id="new_name" required>
+            </p>
+            <button type="submit">Umbenennen</button>
+        </fieldset>
+    </form>
+</details>
 
 {% endblock %}
