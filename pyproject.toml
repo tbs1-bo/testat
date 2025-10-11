@@ -16,8 +16,6 @@ Flask-SQLAlchemy = "^3.0.0"
 python-dotenv = "^0.21.0"
 # https://github.com/maxcountryman/flask-login/blob/main/CHANGES.md
 Flask-Login = "^0.6.0"
-# https://gitpython.readthedocs.io/en/stable/changes.html
-GitPython = "^3.1.27"
 # https://openpyxl.readthedocs.io/en/stable/changes.html
 openpyxl = "^3.0.9"
 # OAuthentication support
