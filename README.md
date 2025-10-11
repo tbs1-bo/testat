@@ -27,5 +27,12 @@ Ein Devserver kann mit folgendem Befehl gestartet werden:
    $ ./start_devserver.sh
    ```
 
+Das Datenbank-Schema ist in der Datei `schema.sql` definiert. Um die Datenbank zu initialisieren, führen Sie den folgenden Befehl aus:
+
+   ```bash
+   $ sqlite3 testate.db < schema.sql
+   ```
+
+Eine Beispiel-Konfigurationsdatei ist in `config.py` enthalten.
 
 
