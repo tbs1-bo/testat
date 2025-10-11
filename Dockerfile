@@ -9,7 +9,8 @@ ENV POETRY_VERSION=2.2.0 \
 
 # Install system dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc libpq-dev curl git locales && \
+    #apt-get install -y --no-install-recommends gcc libpq-dev curl git locales && \
+    apt-get install -y --no-install-recommends locales && \
     pip install "poetry==$POETRY_VERSION" && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     echo "de_DE.UTF-8 UTF-8" > /etc/locale.gen && \
