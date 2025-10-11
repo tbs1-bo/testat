@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# abort on errors
+set -e
+
 # Configuration options
 CONTAINER_NAME="testate-dev"
 IMAGE_NAME="testate"
