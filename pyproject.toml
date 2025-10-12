@@ -9,7 +9,7 @@ python = "^3.11"
 # https://flask.palletsprojects.com/en/2.2.x/changes/
 Flask = "^2.2.2"
 # https://docs.gunicorn.org/en/stable/news.html
-gunicorn = "^22.0.0"
+gunicorn = "^23.0.0"
 # https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/changes/
 Flask-SQLAlchemy = "^3.0.0"
 # https://github.com/theskumar/python-dotenv/blob/master/CHANGELOG.md
