@@ -20,7 +20,6 @@ Flask-Login = "^0.6.0"
 openpyxl = "^3.0.9"
 # OAuthentication support
 Flask-Dance = "^6.2.0"
-blinker = "^1.5"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.15.2"
