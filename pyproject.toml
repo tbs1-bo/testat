@@ -19,6 +19,7 @@ Flask-Login = "^0.6.0"
 # https://openpyxl.readthedocs.io/en/stable/changes.html
 openpyxl = "^3.0.9"
 # OAuthentication support
+# TODO Prüfen, ob durch https://oauth2-proxy.github.io/oauth2-proxy/ ersetzbar.
 Flask-Dance = "^7.1.0"
 
 [tool.poetry.group.dev.dependencies]
