@@ -7,19 +7,19 @@ authors = ["Marco Bakera <marco@bakera.de>"]
 [tool.poetry.dependencies]
 python = "^3.11"
 # https://flask.palletsprojects.com/en/2.2.x/changes/
-Flask = "^2.2.2"
+Flask = "^3.1.2"
 # https://docs.gunicorn.org/en/stable/news.html
 gunicorn = "^23.0.0"
 # https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/changes/
 Flask-SQLAlchemy = "^3.0.0"
 # https://github.com/theskumar/python-dotenv/blob/master/CHANGELOG.md
-python-dotenv = "^0.21.0"
+python-dotenv = "^1.1.1"
 # https://github.com/maxcountryman/flask-login/blob/main/CHANGES.md
 Flask-Login = "^0.6.0"
 # https://openpyxl.readthedocs.io/en/stable/changes.html
 openpyxl = "^3.0.9"
 # OAuthentication support
-Flask-Dance = "^6.2.0"
+Flask-Dance = "^7.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.15.2"
