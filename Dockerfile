@@ -1,5 +1,5 @@
 # Use official Python image as base
-FROM python:3.11-slim
+FROM alpine
 
 # Set environment variables
 ENV POETRY_VERSION=2.2.0 \
@@ -8,13 +8,7 @@ ENV POETRY_VERSION=2.2.0 \
     POETRY_NO_INTERACTION=1
 
 # Install system dependencies
-RUN apt-get update && \
-    #apt-get install -y --no-install-recommends gcc libpq-dev curl git locales && \
-    apt-get install -y --no-install-recommends locales && \
-    pip install "poetry==$POETRY_VERSION" && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    echo "de_DE.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen
+RUN apk add python3 py3-pip poetry 
 
 ENV LANG=de_DE.UTF-8 \
     LANGUAGE=de_DE:de \
@@ -37,5 +31,5 @@ COPY . .
 # Expose port (adjust if needed)
 EXPOSE 5000
 
-# Start the application using gunicorn
+# Start the application 
 CMD ["poetry", "run", "/app/start_prodserver.sh"]
