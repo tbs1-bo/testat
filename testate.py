@@ -487,7 +487,7 @@ def cards_export(project_name):
                 sheet_attempts.append([c.id, c.student_name, m.id, m.description, a.date, a.documented_by])
 
     sheet = wb.create_sheet('Übersicht')
-    sheet.append(["Name", "Vollständigkeit", "Punkte", "Prozent", "IHK-Note", "Gym-Note"])
+    sheet.append(["Name", "Vollständigkeit", "Punkte", "Prozent", "IHK-Note", "Gym-Note", "Fehlversuche"])
     sheet['C1'].comment = openpyxl.comments.Comment("Punktzahl ermittelt aus " +\
         f"Basispunktzahl {config.BASE_SCORE} pro Meilenstein und vermindert " +\
         "um 1 für jeden anderen früher abgeschlossenen Meilenstein.", "Exporter")
@@ -498,7 +498,8 @@ def cards_export(project_name):
         grade_ihk = ihk_grading(round(percent, 0))
         grade_gym = gym_grading(round(percent, 0))
         cardpoints = sum(mspoints[ms] for ms in mspoints if ms.card==c)
-        sheet.append([c.student_name, completed, cardpoints, percent, grade_ihk, grade_gym])
+        n_attempts = sum(len(m.attempts) for m in c.milestones)
+        sheet.append([c.student_name, completed, cardpoints, percent, grade_ihk, grade_gym, n_attempts])
 
     _filehandle, dest_filename = tempfile.mkstemp('.xlsx', 'testat_export_')  
     wb.save(dest_filename)
