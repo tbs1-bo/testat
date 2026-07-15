@@ -189,6 +189,11 @@ def _auth_smtp(username, password):
         app.logger.warning(f'login: "{username}" not found in database')
         return False
 
+    if app.config.get('DEV_LOGIN_NO_PASSWORD'):
+        app.logger.warning(f'DEV_LOGIN_NO_PASSWORD active: logging in "{username}" without checking password')
+        login_user(User(username), remember=True)
+        return True
+
     s = smtplib.SMTP(SMTP_AUTHSERVER)
     s.starttls()
 

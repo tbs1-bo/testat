@@ -14,6 +14,11 @@ APP_DOMAIN = ''
 # User will be authorised against this SMTP-server.
 SMTP_AUTHSERVER = 'smtp.example.com'
 
+# DEV ONLY: if True, login skips the SMTP password check entirely - anyone
+# entering a uid that already exists in db_user is logged in immediately.
+# NEVER set this to True outside of a local dev environment.
+DEV_LOGIN_NO_PASSWORD = False
+
 # Configure the database uri that should be used to connect to the database.
 import os
 SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.environ["PWD"]}/testate.db'
