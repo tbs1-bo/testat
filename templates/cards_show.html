@@ -31,12 +31,13 @@ Testatkarten "{{ project_name }}"
             <td><a href="{{url_for('card_show', cid=card.id)}}">{{ card.student_name }}</a></td>
             <td>
                 {% for m in card.milestones %}
-                    <span title="{{ m.description }}">
+                    {% set n_attempts = m.attempts|length %}
+                    <span title="{{ m.description }}{% if n_attempts %} – {{ n_attempts }} Fehlversuch{{ 'e' if n_attempts != 1 else '' }}{% endif %}">
                         {% if m.is_completed() %}
                         ⬤
                         {% else %}
                         ◯
-                        {% endif %}
+                        {% endif %}{% if n_attempts %}<sup>{{ n_attempts }}</sup>{% endif %}
                     </span>
                 {% endfor %} |
                 {{ compl }} / {{ tot }}

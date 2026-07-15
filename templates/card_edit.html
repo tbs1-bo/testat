@@ -17,13 +17,25 @@ Testatkarte {{ card.project_name}} von {{ card.student_name }}
         <br>
         {% if not m.is_completed() %}
         <strong>
-            <a href="{{ url_for('card_sign', mid=m.id) }}">abzeichnen</a> 
+            <a href="{{ url_for('card_sign', mid=m.id) }}">abzeichnen</a>
         </strong>
+        |
+        <a href="{{ url_for('milestone_attempt_add', mid=m.id) }}">Fehlversuch dokumentieren</a>
         {% else %}
             <a href="{{ url_for('card_unsign', mid=m.id) }}">rückgängig</a>
             <em>
                 ({{m.finished.strftime('%Y-%m-%d') }}, {{m.signed_by}})
             </em>
+        {% endif %}
+        {% if m.attempts %}
+        <ul>
+            {% for a in m.attempts %}
+            <li>
+                Fehlversuch ({{ a.date.strftime('%Y-%m-%d') }}, {{ a.documented_by }})
+                <a href="{{ url_for('milestone_attempt_remove', aid=a.id) }}">entfernen</a>
+            </li>
+            {% endfor %}
+        </ul>
         {% endif %}
     </li>
     {% endfor %}

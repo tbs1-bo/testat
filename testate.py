@@ -182,6 +182,16 @@ class Milestone(db.Model):
     def is_completed(self):
         return self.finished is not None
 
+class Attempt(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date = db.Column(db.DateTime(), nullable=False)
+    documented_by = db.Column(db.String(99))
+
+    milestone_id = db.Column(db.Integer, db.ForeignKey('milestone.id'),
+        nullable=False)
+    milestone = db.relationship(Milestone,
+        backref=db.backref('attempts', lazy=True, cascade='all, delete-orphan'))
+
 def _auth_smtp(username, password):
     app.logger.info(f'auth "{username}"')
 
@@ -457,16 +467,24 @@ def cards_export(project_name):
     sheet = wb.active
     sheet.title = "Testate"
     row = ['card.id', 'project_name', 'student_name', 'is_visible',
-        'milestone.id', 'milestone.description', 'milestone.finished', 
-        'milestone.signed_by', 'points']
+        'milestone.id', 'milestone.description', 'milestone.finished',
+        'milestone.signed_by', 'milestone.attempts', 'points']
     sheet.append(row)
 
     mspoints = _calc_milestone_points(cards, config.BASE_SCORE)
     for c in cards:
         row = [c.id, c.project_name, c.student_name, c.is_visible]
         for m in c.milestones:
-            row_ms = [m.id, m.description, m.finished, m.signed_by, mspoints[m]]
+            row_ms = [m.id, m.description, m.finished, m.signed_by, len(m.attempts), mspoints[m]]
             sheet.append(row + row_ms)
+
+    sheet_attempts = wb.create_sheet('Fehlversuche')
+    sheet_attempts.append(['card.id', 'student_name', 'milestone.id', 'milestone.description',
+        'attempt.date', 'attempt.documented_by'])
+    for c in cards:
+        for m in c.milestones:
+            for a in m.attempts:
+                sheet_attempts.append([c.id, c.student_name, m.id, m.description, a.date, a.documented_by])
 
     sheet = wb.create_sheet('Übersicht')
     sheet.append(["Name", "Vollständigkeit", "Punkte", "Prozent", "IHK-Note", "Gym-Note"])
@@ -625,6 +643,35 @@ def card_signing(mid, sign):
     flash(f'Meilenstein "{m.description}" von "{m.card.student_name}".')
 
     return redirect(url_for('cards_show', project_name=m.card.project_name))
+
+@app.route('/milestone/<int:mid>/attempt/add')
+@login_required
+def milestone_attempt_add(mid):
+    m = db.get_or_404(Milestone, mid)
+    user = current_user.get_id()
+    a = Attempt(date=datetime.now(), documented_by=user, milestone=m)
+    db.session.add(a)
+    db.session.commit()
+
+    app.logger.info(f'attempt for milestone {m} ({m.description}) from {m.card.student_name} documented by {user}')
+    flash(f'Fehlversuch für "{m.description}" von "{m.card.student_name}" dokumentiert.')
+
+    return redirect(url_for('cards_show', project_name=m.card.project_name))
+
+@app.route('/attempt/<int:aid>/remove')
+@login_required
+def milestone_attempt_remove(aid):
+    a = db.get_or_404(Attempt, aid)
+    m = a.milestone
+    project_name = m.card.project_name
+
+    app.logger.info(f'attempt {a.id} for milestone {m} ({m.description}) from {m.card.student_name} removed by {current_user.get_id()}')
+    db.session.delete(a)
+    db.session.commit()
+
+    flash(f'Fehlversuch für "{m.description}" von "{m.card.student_name}" entfernt.')
+
+    return redirect(url_for('cards_show', project_name=project_name))
 
 @app.route('/cards/<project_name>/visibility_all/<int:visible>')
 @login_required

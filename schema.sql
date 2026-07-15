@@ -16,6 +16,15 @@ CREATE TABLE milestone (
 	FOREIGN KEY(card_id) REFERENCES card (id)
 );
 
+CREATE TABLE attempt (
+	id INTEGER NOT NULL,
+	date DATETIME NOT NULL,
+	documented_by VARCHAR(99),
+	milestone_id INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(milestone_id) REFERENCES milestone (id)
+);
+
 CREATE TABLE db_user (
 	uid VARCHAR (80) NOT NULL, 
 	is_admin BOOLEAN DEFAULT (0), 
