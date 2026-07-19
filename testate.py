@@ -387,11 +387,11 @@ def cards_show(project_name):
     order_by = request.args.get('order_by', 'student_name')
     show_hidden = request.args.get('show_hidden', 'false').lower() == 'true'
 
-    #cards = [c for c in current_user.dbu.visible_cards() if c.project_name==project_name]
+    user_cards = [c for c in current_user.dbu.cards if c.project_name == project_name]
     if show_hidden:
-        cards = Card.query.filter_by(project_name=project_name).all()
+        cards = user_cards
     else:
-        cards = Card.query.filter_by(project_name=project_name, is_visible=True).all()
+        cards = [c for c in user_cards if c.is_visible]
 
     completed_ms, total_ms = 0, 0
     for c in cards:
@@ -509,11 +509,18 @@ def cards_export(project_name):
 @login_required
 def card_show(cid):
     c = db.get_or_404(Card, cid)
+    if current_user.get_id() not in [user.uid for user in c.users]:
+        app.logger.warning(f'User {current_user.get_id()} is not allowed to view card {cid}')
+        return "Forbidden", 403
     return render_template('card_edit.html', card=c)
 
 @app.post('/card/create/<project_name>')
 @login_required
 def card_create(project_name):
+    if project_name not in current_user.project_names():
+        app.logger.warning(f'User {current_user.get_id()} has no access to project {project_name}')
+        return "Forbidden", 403
+
     c1:Card = Card.query.filter_by(project_name=project_name).first()
     student_name = request.form['student_name']
     c = c1.clean_copy(pname=project_name, sname=student_name)
@@ -581,6 +588,10 @@ def card_user_add():
     pname = request.form['project_name']
     username = request.form['username']
 
+    if pname not in current_user.project_names():
+        app.logger.warning(f'User {current_user.get_id()} has no access to project {pname}')
+        return "Forbidden", 403
+
     user = db.session.get(DBUser, username)
     if not user:
         flash(f'Nutzer nicht gefunden {username}')
@@ -607,6 +618,10 @@ def card_user_add():
 def milestone_add():
     pname = request.form['project_name']
     ms_desc = request.form['milestone_description']
+
+    if pname not in current_user.project_names():
+        app.logger.warning(f'User {current_user.get_id()} has no access to project {pname}')
+        return "Forbidden", 403
 
     app.logger.info(f"adding milestone {ms_desc} to project {pname}")
     cards = Card.query.filter_by(project_name=pname)
