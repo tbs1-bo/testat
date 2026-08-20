@@ -1,0 +1,8 @@
+#!/bin/sh
+# Ruff-Check vor jedem Commit. Aktivieren mit: git config core.hooksPath hooks
+
+poetry run ruff check .
+if [ $? -ne 0 ]; then
+    echo "Ruff hat Probleme gefunden. Commit abgebrochen."
+    exit 1
+fi
