@@ -1,29 +1,28 @@
-import os
-from collections import defaultdict
-from typing import List, Dict
-from flask import Flask, render_template, redirect, request, \
-    flash, url_for, send_file
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_required, \
-    login_user, logout_user, current_user
-from openpyxl import Workbook
-import openpyxl.comments
-from utils import ihk_grading, gym_grading
-from datetime import datetime
-import smtplib
-import config
 import locale
-from functools import cmp_to_key
+import os
+import smtplib
 import tempfile
-from flask_dance.contrib.azure import make_azure_blueprint, azure
+from collections import defaultdict
+from datetime import datetime
+from functools import cmp_to_key
+
+import openpyxl.comments
+from flask import Flask, flash, redirect, render_template, request, send_file, url_for
 from flask_dance.consumer import oauth_authorized
+from flask_dance.contrib.azure import azure, make_azure_blueprint
+from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
+from flask_sqlalchemy import SQLAlchemy
+from openpyxl import Workbook
+
+import config
+from utils import gym_grading, ihk_grading
 
 # change locale to support german sorting order respecting umlauts
 locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
 
 app = Flask(__name__)
 app.config.from_object(config)
-app.logger.info(f'reading config file from env var TESTAT_CONF')
+app.logger.info('reading config file from env var TESTAT_CONF')
 app.config.from_envvar('TESTAT_CONF')
 
 SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
@@ -54,7 +53,7 @@ app.logger.info(f'APP_DOMAIN={APP_DOMAIN}')
 
 
 # https://github.com/Azure-Samples/ms-identity-python-webapp/issues/51#issuecomment-718990449
-class CustomProxyFix(object):
+class CustomProxyFix:
     def __init__(self, app):
         self.app = app
 
@@ -232,7 +231,7 @@ def login():
             return redirect(url_for('index'))
 
         else:
-            app.logger.debug(f'login failed')
+            app.logger.debug('login failed')
             flash('Login fehlgeschlagen')
             return redirect(url_for('login'))
 
@@ -278,7 +277,7 @@ def azure_logged_in(blueprint, token):
 @login_required
 def logout():
     app.logger.debug(f'logout {current_user}')
-    flash(f'ausgeloggt')
+    flash('ausgeloggt')
     logout_user()
     return redirect(url_for('index'))
 
@@ -435,10 +434,10 @@ def cards_show(project_name):
         last_milestone_by_student=lst_milestone_by_student,
         current_time=datetime.now())
 
-def _calc_milestone_points(cards:List[Card], base_score) -> Dict[Milestone, int]:
+def _calc_milestone_points(cards:list[Card], base_score) -> dict[Milestone, int]:
     'Compute point for each card and return a dict mapping milestones to points.'
-    points:Dict[Milestone, int] = defaultdict(int)
-    milestones: Dict[str, List[Milestone]] = defaultdict(list)
+    points:dict[Milestone, int] = defaultdict(int)
+    milestones: dict[str, list[Milestone]] = defaultdict(list)
     # grouping cards by description
     for c in cards:
         compl = [ms for ms in c.milestones if ms.is_completed()]
@@ -669,7 +668,9 @@ def milestone_attempt_add(mid):
     db.session.add(a)
     db.session.commit()
 
-    app.logger.info(f'attempt for milestone {m} ({m.description}) from {m.card.student_name} documented by {user}')
+    app.logger.info(
+        f'attempt for milestone {m} ({m.description}) from {m.card.student_name} documented by {user}'
+    )
     flash(f'Fehlversuch für "{m.description}" von "{m.card.student_name}" dokumentiert.')
 
     return redirect(url_for('cards_show', project_name=m.card.project_name))
@@ -681,7 +682,10 @@ def milestone_attempt_remove(aid):
     m = a.milestone
     project_name = m.card.project_name
 
-    app.logger.info(f'attempt {a.id} for milestone {m} ({m.description}) from {m.card.student_name} removed by {current_user.get_id()}')
+    app.logger.info(
+        f'attempt {a.id} for milestone {m} ({m.description}) from {m.card.student_name} '
+        f'removed by {current_user.get_id()}'
+    )
     db.session.delete(a)
     db.session.commit()
 

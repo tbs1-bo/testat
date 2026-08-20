@@ -1,5 +1,6 @@
-import testate
 import os
+
+import testate
 
 print("Create tables")
 testate.db.create_all()

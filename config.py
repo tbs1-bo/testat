@@ -21,6 +21,7 @@ DEV_LOGIN_NO_PASSWORD = False
 
 # Configure the database uri that should be used to connect to the database.
 import os
+
 SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.environ["PWD"]}/testate.db'
 # defaults to false in future release (2022-02-13)
 SQLALCHEMY_TRACK_MODIFICATIONS = False

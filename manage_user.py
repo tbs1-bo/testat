@@ -1,5 +1,7 @@
-import testate
 import sys
+
+import testate
+
 
 def run(cmd):
     if cmd == 'add':
@@ -18,7 +20,7 @@ def run(cmd):
         u.delete()
 
     else:
-        print(f'unsupported command')
+        print('unsupported command')
 
 def main():
     if len(sys.argv) != 2:

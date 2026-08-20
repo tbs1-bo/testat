@@ -40,5 +40,8 @@ target-version = "py311"
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.per-file-ignores]
+# import os steht bewusst direkt vor seiner einzigen Verwendung
 "config.py" = ["E402"]
 "config.local.py" = ["E402"]
+# einzeilige if/elif-Notentabellen bewusst kompakt gehalten
+"utils.py" = ["E701"]

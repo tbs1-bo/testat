@@ -1,5 +1,7 @@
-from testate import Card, app, DBUser, db
 import sys
+
+from testate import Card, DBUser, app, db
+
 
 def run(cmd):
     if cmd == 'ls':
@@ -41,7 +43,7 @@ def run(cmd):
         db.session.commit()
 
     else:
-        print(f'unsupported command')
+        print('unsupported command')
 
 def main():
     if len(sys.argv) != 2:
