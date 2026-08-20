@@ -552,7 +552,7 @@ def cards_create():
         pname = request.form['project_name']
         if pname.strip() == '':
             flash('Projektname darf nicht leer sein')
-            return redirect(url_for('card_create'))
+            return redirect(url_for('cards_create'))
 
         if pname in all_project_names():
             flash(f'Projektname "{pname}" doppelt')
@@ -696,6 +696,10 @@ def milestone_attempt_remove(aid):
 @app.route('/cards/<project_name>/visibility_all/<int:visible>')
 @login_required
 def cards_visibility_all(project_name, visible):
+    if project_name not in current_user.project_names():
+        app.logger.warning(f'User {current_user.get_id()} has no access to project {project_name}')
+        return "Forbidden", 403
+
     vis = visible == 1
     app.logger.info(f'change visibility of all cards in "{project_name}" to {vis}')
     
