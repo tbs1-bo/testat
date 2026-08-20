@@ -6,3 +6,9 @@ if [ $? -ne 0 ]; then
     echo "Ruff hat Probleme gefunden. Commit abgebrochen."
     exit 1
 fi
+
+poetry run pip-audit
+if [ $? -ne 0 ]; then
+    echo "pip-audit hat Schwachstellen gefunden. Commit abgebrochen."
+    exit 1
+fi
