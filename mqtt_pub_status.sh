@@ -17,12 +17,20 @@ echo URL is $URL
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/last_update -m "$(date)"
 
 # PROJECT INFORMATION
+topics_json="[
+{\"name\": \"$TOPIC/last_update\", \"description\": \"Zeitstempel der letzten Aktualisierung\"},
+{\"name\": \"$TOPIC/system\", \"description\": \"System-Infos: CPU-Load, IP, Hostname, Uptime\"},
+{\"name\": \"$TOPIC/stats\", \"description\": \"Anzahl Nutzer, Karten, Projekte, Meilensteine\"},
+{\"name\": \"$TOPIC/milestones\", \"description\": \"Meilenstein-Statistik (fertig/offen/letzter Abschluss)\"}
+]"
+
 info_json="{
 \"name\": \"Testate\",
 \"description\": \"Digitale Verwaltung von Testatkarten\",
 \"maintainer\": \"Marco Bakera\",
 \"url\": \"$URL\",
-\"repository_url\": \"https://github.com/tbs1-bo/testat\"
+\"repository_url\": \"https://github.com/tbs1-bo/testat\",
+\"topics\": $topics_json
 }"
 echo $info_json
 mosquitto_pub -h $MQTT_HOST -r -t $TOPIC/info -m "$info_json"
