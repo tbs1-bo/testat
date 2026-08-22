@@ -7,10 +7,6 @@ Projekten verfolgen).
 
 Änderungen werden in `CHANGELOG.md` dokumentiert.
 
-## Linting
-
-Ruff ist als Dev-Dependency eingerichtet (`poetry run ruff check .`). Pre-Commit-Hook einmalig aktivieren mit `git config core.hooksPath hooks`. 
-
 ## Agent skills
 
 ### Issue tracker
