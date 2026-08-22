@@ -6,7 +6,7 @@
 # abort on unset variables
 set -u
 
-TOPIC=testate
+TOPIC=projects/testate
 
 echo publish to $MQTT_HOST
 echo project in $PROJDIR
