@@ -12,27 +12,27 @@ Eine Webanwendung zur Verwaltung von Testaten.
    ```
 
 ## Development
-Für die lokale Entwicklung benötigen Sie Python. Klonen Sie das Repository und installieren Sie die Abhängigkeiten mit Poetry:
+Für die lokale Entwicklung benötigen Sie Python und Poetry. Klonen Sie das Repository und führen Sie das Setup-Skript aus:
 
    ```bash
    $ git clone
-   $ cd testatkarte
-   $ pip install poetry
-   $ poetry install
+   $ cd testat
+   $ ./setup_repo.sh
    ```
 
-Ein Devserver kann mit folgendem Befehl gestartet werden:
+`setup_repo.sh` aktiviert die Git-Hooks (`core.hooksPath`), installiert die Abhängigkeiten mit Poetry, legt `config.local.py` aus `config.py` an (Werte wie `SECRET_KEY`, `AZURE_OAUTH_*` danach eintragen) und initialisiert `testate.db` aus `schema.sql`, jeweils nur falls noch nicht vorhanden.
+
+Zusätzlich wird eine `.env` mit Umgebungsvariablen benötigt (wird per `. .env` geladen, siehe `start_devserver.sh`), dafür gibt es keine Vorlage im Repo. Mindestens erforderlich:
+
+   ```bash
+   export FLASK_APP=testate
+   export TESTAT_CONF=config.local.py
+   ```
+
+Ein Devserver kann anschließend mit folgendem Befehl gestartet werden:
 
    ```bash
    $ ./start_devserver.sh
    ```
-
-Das Datenbank-Schema ist in der Datei `schema.sql` definiert. Um die Datenbank zu initialisieren, führen Sie den folgenden Befehl aus:
-
-   ```bash
-   $ sqlite3 testate.db < schema.sql
-   ```
-
-Eine Beispiel-Konfigurationsdatei ist in `config.py` enthalten.
 
 
