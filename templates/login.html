@@ -12,17 +12,18 @@ Login
 {% endblock %}
 
 {% block body %}
-<form action="{{url_for('login')}}" method="POST">
-    Benutzername (EMail-Adresse): <input name="username">
-    Passwort: <input type="password" name="password">
-    <input type="submit" value="Login">
-</form>
-
-<hr>
-
 <p>
   <a href="{{url_for('login_azure')}}">Login mit Microsoft</a>
 </p>
+
+{% if config.DEV_LOGIN_NO_PASSWORD %}
+<hr>
+
+<form action="{{url_for('login')}}" method="POST">
+    Benutzername (EMail-Adresse): <input name="username">
+    <input type="submit" value="Login">
+</form>
+{% endif %}
 
 {% endblock %}
 

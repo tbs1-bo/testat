@@ -1,6 +1,5 @@
 import locale
 import os
-import smtplib
 import tempfile
 from collections import defaultdict
 from datetime import datetime
@@ -25,7 +24,6 @@ app.config.from_object(config)
 app.logger.info('reading config file from env var TESTAT_CONF')
 app.config.from_envvar('TESTAT_CONF')
 
-SMTP_AUTHSERVER = app.config['SMTP_AUTHSERVER']
 APP_DOMAIN = app.config['APP_DOMAIN']
 
 db = SQLAlchemy(app)
@@ -48,7 +46,6 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 app.logger.info('env var configuration:')
-app.logger.info(f'SMTP_AUTHSERVER={SMTP_AUTHSERVER}')
 app.logger.info(f'APP_DOMAIN={APP_DOMAIN}')
 
 
@@ -191,10 +188,10 @@ class Attempt(db.Model):
     milestone = db.relationship(Milestone,
         backref=db.backref('attempts', lazy=True, cascade='all, delete-orphan'))
 
-def _auth_smtp(username, password):
+def _login_dev_bypass(username):
     app.logger.info(f'auth "{username}"')
 
-    if db.session.get(DBUser ,username) is None:
+    if db.session.get(DBUser, username) is None:
         app.logger.warning(f'login: "{username}" not found in database')
         return False
 
@@ -203,17 +200,7 @@ def _auth_smtp(username, password):
         login_user(User(username), remember=True)
         return True
 
-    s = smtplib.SMTP(SMTP_AUTHSERVER)
-    s.starttls()
-
-    try:
-        s.login(username, password) 
-        login_user(User(username), remember=True)
-        return True
-
-    except smtplib.SMTPAuthenticationError:
-        app.logger.warning(f'unable to login at {username}@{SMTP_AUTHSERVER}')
-        return False
+    return False
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -222,7 +209,7 @@ def login():
     elif request.method == "POST":
         username = request.form['username']
         app.logger.debug(f'trying to login "{username}"')
-        if _auth_smtp(username, request.form['password']):
+        if _login_dev_bypass(username):
             flash('Login erfolgreich')
             app.logger.debug(f'login successful {current_user}')
             #next = request.args.get('next')

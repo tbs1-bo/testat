@@ -35,8 +35,7 @@ def client(app):
 
 def login(client, uid):
     'loggt uid ueber die echte /login-Route via DEV_LOGIN_NO_PASSWORD ein'
-    return client.post('/login', data={'username': uid, 'password': 'irrelevant'},
-        follow_redirects=True)
+    return client.post('/login', data={'username': uid}, follow_redirects=True)
 
 
 def create_user(uid, is_admin=False):

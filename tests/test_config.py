@@ -1,5 +1,5 @@
 # Testkonfiguration fuer testate.py: laedt vor jedem anderen Import in
-# conftest.py, ersetzt SMTP/Azure-Infrastruktur durch den Dev-Login-Bypass
+# conftest.py, ersetzt die Azure-Infrastruktur durch den Dev-Login-Bypass
 # und die dateibasierte SQLite-DB durch eine In-Memory-DB.
 
 from sqlalchemy.pool import StaticPool
@@ -10,9 +10,7 @@ FLASK_APP = 'testate'
 
 APP_DOMAIN = ''
 
-SMTP_AUTHSERVER = 'smtp.example.com'
-
-# Dev-Login-Bypass statt echtem SMTP-Login
+# Dev-Login-Bypass statt echtem Azure-Login
 DEV_LOGIN_NO_PASSWORD = True
 
 TESTING = True
