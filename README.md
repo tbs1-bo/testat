@@ -35,4 +35,8 @@ Ein Devserver kann anschließend mit folgendem Befehl gestartet werden:
    $ ./start_devserver.sh
    ```
 
+## Changelog
+
+Siehe [CHANGELOG.md](CHANGELOG.md) für eine Übersicht der größeren Änderungen.
+
 
