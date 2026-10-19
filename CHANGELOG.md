@@ -76,6 +76,8 @@ aktuellen Entwicklungszyklus ab Juli 2026 (nach ~9 Monaten Pause seit Oktober 20
 
 - Projektdoku nach `AGENTS.md` verschoben, `CLAUDE.md` verweist darauf
   ([da2972e](https://github.com/tbs1-bo/testat/commit/da2972e)).
+- Erste ADRs in `docs/adr/` (Login, OAuth-Bibliothek, Projektmodell,
+  Zugriffsmodell, systemd-Deployment).
 - Skill-Dokus für Issue-Tracker und Domain-Docs verlinkt
   ([c4b4c6b](https://github.com/tbs1-bo/testat/commit/c4b4c6b)).
 
