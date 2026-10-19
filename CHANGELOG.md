@@ -70,6 +70,8 @@ aktuellen Entwicklungszyklus ab Juli 2026 (nach ~9 Monaten Pause seit Oktober 20
 - **`mqtt_pub_status.sh`**: publiziert nun auch die Liste eigener Topics im
   info-Topic ([96e615b](https://github.com/tbs1-bo/testat/commit/96e615b));
   Topic-Präfix-Fix ([8d5c3a1](https://github.com/tbs1-bo/testat/commit/8d5c3a1)).
+- **Smoke-Test in `server_update.sh`**: prüft nach dem Neustart, ob
+  `/testat/login` (200) und `/testat/login_azure` (302) antworten.
 - **`server_update.sh` robuster gemacht, `poetry.lock` versioniert**
   ([aed30a4](https://github.com/tbs1-bo/testat/commit/aed30a4)).
 - Diverse Dependency-Updates (gunicorn, pyOpenSSL).
