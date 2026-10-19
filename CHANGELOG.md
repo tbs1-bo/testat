@@ -37,8 +37,8 @@ aktuellen Entwicklungszyklus ab Juli 2026 (nach ~9 Monaten Pause seit Oktober 20
   [8724a66](https://github.com/tbs1-bo/testat/commit/8724a66)), `pytest` auf
   9.1.1 (CVE-2025-71176,
   [48d9fe1](https://github.com/tbs1-bo/testat/commit/48d9fe1)), `urllib3` auf
-  2.8.0 (PYSEC-2026-4175/4176/4177) und `werkzeug` auf 3.1.9
-  (PYSEC-2026-4312).
+  2.8.0 (PYSEC-2026-4175/4176/4177), `werkzeug` auf 3.1.9
+  (PYSEC-2026-4312) und `oauthlib` auf 4.0.0 (PYSEC-2026-4114).
 - **pip-audit als Pre-Commit-Check ergänzt**
   ([472225c](https://github.com/tbs1-bo/testat/commit/472225c)) — prüft
   Dependencies künftig automatisch vor jedem Commit.
